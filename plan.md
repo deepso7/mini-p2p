@@ -55,7 +55,7 @@ All public APIs designed for WebAssembly FFI from the start:
 ## Project Structure
 
 ```
-mini-p2p/
+minip2p/
 ├── Cargo.toml                    # Rust workspace configuration
 ├── src/
 │   ├── lib.rs                    # Library entry point, wasm_bindgen exports

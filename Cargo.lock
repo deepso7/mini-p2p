@@ -3,5 +3,9 @@
 version = 4
 
 [[package]]
-name = "mini-p2p"
+name = "minip2p-core"
+version = "0.1.0"
+
+[[package]]
+name = "minip2p-identity"
 version = "0.1.0"
