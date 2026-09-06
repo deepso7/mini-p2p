@@ -71,16 +71,15 @@ isolates devices, and allow incoming UDP port 4001 through the desktop's
 firewall.
 
 Put this in `App.tsx` for a project without Expo Router, or in the route
-component for an Expo Router project. Replace `remoteAddress` with the address
-for the running listener:
+component for an Expo Router project. Replace the placeholder string in
+`remoteAddress` with the complete address printed by the running listener:
 
 ```tsx
 import { generateSecretKey, useMinip2p } from "@minip2p/react-native";
 import { useCallback, useMemo, useState } from "react";
 import { Button, Text, View } from "react-native";
 
-const remoteAddress =
-  "/ip4/192.168.1.42/udp/4001/quic-v1/p2p/12D3KooW...";
+const remoteAddress = "YOUR_LISTENER_ADDRESS_HERE";
 
 export default function App() {
   const secretKey = useMemo(() => generateSecretKey(), []);
