@@ -30,7 +30,7 @@ minip2p-platform = { path = "../platform", version = "0.5.3", default-features =
 minip2p-relay = { path = "../relay", version = "0.5.3", default-features = false }
 minip2p-swarm = { path = "../swarm", version = "0.5.3", default-features = false }
 minip2p-transport = { path = "../transport", version = "0.5.3", default-features = false }
-thiserror = { version = "2.0.18", default-features = false }
+thiserror = { version = "2.0.20", default-features = false }
 
 [dev-dependencies]
 criterion = "0.8.2"

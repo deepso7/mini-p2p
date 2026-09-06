@@ -35,10 +35,10 @@ minip2p-identity = { path = "../../crates/identity", version = "0.5.3", default-
 minip2p-platform = { path = "../../crates/platform", version = "0.5.3", default-features = false }
 minip2p-secure-mux = { path = "../../crates/secure-mux", version = "0.5.3", default-features = false }
 minip2p-transport = { path = "../../crates/transport", version = "0.5.3", default-features = false }
-mio = { version = "1.0", features = ["net", "os-poll"], optional = true }
+mio = { version = "1.2", features = ["net", "os-poll"], optional = true }
 socket2 = { version = "0.6.5", optional = true }
 minip2p-smoltcp = { path = "../../crates/smoltcp", version = "0.5.3", optional = true }
-thiserror = { version = "2.0.18", default-features = false }
+thiserror = { version = "2.0.20", default-features = false }
 
 [dev-dependencies]
 criterion = "0.8.2"
