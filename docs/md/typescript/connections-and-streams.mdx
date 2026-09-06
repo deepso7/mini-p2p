@@ -104,6 +104,99 @@ endpoint.addProtocol("/example/chat/1");
 Both peers must support the same ID. Wait for `peerReady` before opening so the
 remote Identify snapshot is available.
 
+## Exchange one request and response
+
+This Node.js example uses one stream for a request and its reply. From a
+directory where you installed `@minip2p/node`, create `receiver.mjs`:
+
+```ts
+import { Minip2p, generateSecretKey } from "@minip2p/node";
+
+const protocol = "/example/echo/1";
+const decoder = new TextDecoder();
+const endpoint = Minip2p.create({
+  protocols: [protocol],
+  secretKey: generateSecretKey(),
+  transports: {
+    quic: { listen: ["/ip4/127.0.0.1/udp/4002/quic-v1"] },
+  },
+});
+
+try {
+  console.log(endpoint.listenAddrs()[0]);
+
+  const stream = await endpoint.once("stream", { timeoutMs: 0 });
+  let request = "";
+  for await (const chunk of stream) {
+    request += decoder.decode(chunk, { stream: true });
+  }
+  request += decoder.decode();
+
+  console.log(`received: ${request}`);
+  stream.write(`echo: ${request}`);
+  stream.closeWrite();
+
+  await new Promise((resolve) => stream.on("closed", resolve));
+} finally {
+  endpoint.close();
+}
+```
+
+Run the receiver in the first terminal and copy its complete printed address:
+
+```bash
+node receiver.mjs
+```
+
+In the same directory, create `sender.mjs`:
+
+```ts
+import { Minip2p, generateSecretKey } from "@minip2p/node";
+
+const remoteAddress = process.argv[2];
+if (remoteAddress === undefined) {
+  throw new Error("pass the receiver's peer multiaddress");
+}
+
+const protocol = "/example/echo/1";
+const decoder = new TextDecoder();
+const endpoint = Minip2p.create({
+  protocols: [protocol],
+  secretKey: generateSecretKey(),
+});
+
+try {
+  const connected = await endpoint.connectAddr(remoteAddress, {
+    timeoutMs: 10_000,
+  });
+  await endpoint.waitPeerReady(connected.peerId, { timeoutMs: 10_000 });
+
+  const stream = await endpoint.openStream(connected.peerId, protocol, {
+    timeoutMs: 10_000,
+  });
+  stream.write("hello");
+  stream.closeWrite();
+
+  let reply = "";
+  for await (const chunk of stream) {
+    reply += decoder.decode(chunk, { stream: true });
+  }
+  console.log(reply + decoder.decode());
+} finally {
+  endpoint.close();
+}
+```
+
+```bash
+node sender.mjs /ip4/127.0.0.1/udp/4002/quic-v1/p2p/12D3KooW...
+```
+
+Run the sender in the second terminal with the receiver's address. The receiver
+prints `received: hello`. The sender prints `echo: hello`.
+
+The sender closes its endpoint after reading the complete reply. The receiver
+waits for the stream to close before stopping its own endpoint.
+
 ## Open and write
 
 ```ts
