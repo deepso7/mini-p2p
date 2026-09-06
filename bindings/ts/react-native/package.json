@@ -85,8 +85,8 @@
   "devDependencies": {
     "@minip2p/test-fixtures": "workspace:*",
     "@react-native-community/cli": "20.2.0",
-    "@react-native/babel-preset": "0.87.0",
-    "@react-native/typescript-config": "0.87.0",
+    "@react-native/babel-preset": "0.87.1",
+    "@react-native/typescript-config": "0.87.1",
     "@types/react": "catalog:",
     "del-cli": "catalog:",
     "react": "catalog:",
