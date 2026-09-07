@@ -63,9 +63,9 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY docs/package.json docs/
 COPY bindings/ts/core/package.json bindings/ts/core/
 COPY bindings/ts/node/package.json bindings/ts/node/
-COPY bindings/ts/node/npm/ bindings/ts/node/npm/
+COPY bindings/ts/node-platforms/ bindings/ts/node-platforms/
 COPY bindings/ts/react-native/package.json bindings/ts/react-native/
-COPY bindings/ts/react-native/example/package.json bindings/ts/react-native/example/
+COPY examples/react-native/package.json examples/react-native/
 COPY bindings/ts/react-native/patches/ bindings/ts/react-native/patches/
 COPY bindings/ts/test-fixtures/package.json bindings/ts/test-fixtures/
 RUN pnpm install --frozen-lockfile

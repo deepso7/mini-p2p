@@ -21,11 +21,11 @@
         "!android/build",
         "src/*.ts",
         "src/*.tsx",
-        "example/package.json",
-        "example/android",
-        "!example/android/.gradle",
-        "!example/android/build",
-        "!example/android/app/build"
+        "$TURBO_ROOT$/examples/react-native/package.json",
+        "$TURBO_ROOT$/examples/react-native/android",
+        "!$TURBO_ROOT$/examples/react-native/android/.gradle",
+        "!$TURBO_ROOT$/examples/react-native/android/build",
+        "!$TURBO_ROOT$/examples/react-native/android/app/build"
       ],
       "outputs": []
     },
@@ -42,10 +42,10 @@
         "ios",
         "src/*.ts",
         "src/*.tsx",
-        "example/package.json",
-        "example/ios",
-        "!example/ios/build",
-        "!example/ios/Pods"
+        "$TURBO_ROOT$/examples/react-native/package.json",
+        "$TURBO_ROOT$/examples/react-native/ios",
+        "!$TURBO_ROOT$/examples/react-native/ios/build",
+        "!$TURBO_ROOT$/examples/react-native/ios/Pods"
       ],
       "outputs": []
     },

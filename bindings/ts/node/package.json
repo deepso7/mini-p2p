@@ -44,7 +44,9 @@
     "pretest": "cargo build --locked -p minip2p-relay-server-example",
     "test": "vitest run --config ../../../vitest.config.ts --root . --no-file-parallelism",
     "test:watch": "vitest --config ../../../vitest.config.ts --root .",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "native:artifacts": "napi artifacts --cwd ../../.. --package-json-path bindings/ts/node/package.json --npm-dir bindings/ts/node-platforms --output-dir bindings/ts/node/artifacts",
+    "native:prepublish": "napi prepublish --cwd ../../.. --package-json-path bindings/ts/node/package.json --npm-dir bindings/ts/node-platforms -t npm --no-gh-release"
   },
   "dependencies": {
     "@minip2p/core": "workspace:*"

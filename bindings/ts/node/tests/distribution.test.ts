@@ -45,7 +45,10 @@ describe("@minip2p/node distribution", () => {
       const manifest = JSON.parse(
         readFileSync(
           fileURLToPath(
-            new URL(`../npm/${target}/package.json`, import.meta.url)
+            new URL(
+              `../../node-platforms/${target}/package.json`,
+              import.meta.url
+            )
           ),
           "utf-8"
         )

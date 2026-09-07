@@ -1,6 +1,6 @@
 # Contributing
 
-This package is part of the root pnpm workspace and includes an Expo SDK 57 development-build example.
+This package is part of the root pnpm workspace with an Expo SDK 57 development-build example in [`examples/react-native`](../../../examples/react-native).
 
 ## Setup
 

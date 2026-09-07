@@ -9,7 +9,8 @@
     "ios": "expo run:ios",
     "prebuild": "expo prebuild --clean --no-install",
     "typecheck": "tsc --noEmit",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "clean": "del-cli android/.cxx android/build android/app/build ios/build"
   },
   "dependencies": {
     "@minip2p/react-native": "workspace:*",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@types/react": "catalog:",
+    "del-cli": "catalog:",
     "typescript": "catalog:"
   }
 }

@@ -101,7 +101,7 @@ jobs:
             exit 1
           fi
           platform_errors="$({
-            for manifest in bindings/ts/node/npm/*/package.json; do
+            for manifest in bindings/ts/node-platforms/*/package.json; do
               jq -r --arg version "$version" '
                 select(.version != $version or .publishConfig.access != "public")
                 | "\(.name) is not public at \($version)"
@@ -402,13 +402,13 @@ jobs:
         run: node react-native/scripts/check-android-elf.mjs
       - run: pnpm --workspace-root example prebuild
       - name: Build both Android ABIs
-        working-directory: bindings/ts/react-native/example/android
+        working-directory: examples/react-native/android
         run: ./gradlew :app:assembleDebug -PreactNativeArchitectures=arm64-v8a,x86_64
       - name: Validate 16 KiB APK zip alignment
         run: |
           "$ANDROID_HOME/build-tools/36.0.0/zipalign" \
             -c -P 16 -v 4 \
-            react-native/example/android/app/build/outputs/apk/debug/app-debug.apk
+            ../../examples/react-native/android/app/build/outputs/apk/debug/app-debug.apk
       - name: Enforce native size budget
         run: node react-native/scripts/check-native-size.mjs android
         env:
@@ -509,7 +509,7 @@ jobs:
           path: bindings/ts/node/artifacts
           merge-multiple: true
       - name: Assemble Node platform packages
-        run: pnpm --filter @minip2p/node exec napi artifacts --output-dir artifacts
+        run: pnpm --filter @minip2p/node native:artifacts
       - run: pnpm --workspace-root typecheck
       - run: pnpm --workspace-root test
       - run: pnpm --workspace-root lint
@@ -542,7 +542,7 @@ jobs:
             --pack-destination "$PWD/release-packages"
           pnpm --filter @minip2p/node pack \
             --pack-destination "$PWD/release-packages"
-          for platform_dir in node/npm/*; do
+          for platform_dir in node-platforms/*; do
             pnpm --dir "$platform_dir" pack \
               --pack-destination "$PWD/release-packages"
           done
@@ -556,7 +556,7 @@ jobs:
             "release-packages/minip2p-react-native-$RELEASE_VERSION.tgz" \
             react-native \
             "release-packages/minip2p-node-$RELEASE_VERSION.tgz" \
-            node/npm
+            node-platforms
       - name: Smoke-test installation from tarballs
         env:
           RELEASE_VERSION: ${{ needs.verify-release.outputs.version }}
@@ -574,7 +574,7 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: minip2p-node-platform-packages
-          path: bindings/ts/node/npm
+          path: bindings/ts/node-platforms
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -724,11 +724,11 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: minip2p-node-platform-packages
-          path: bindings/ts/node/npm
+          path: bindings/ts/node-platforms
       - name: Check verified platform artifacts
-        run: test "$(find node/npm -name 'minip2p.*.node' -type f -size +0c | wc -l)" -eq 7
+        run: test "$(find node-platforms -name 'minip2p.*.node' -type f -size +0c | wc -l)" -eq 7
       - name: Publish platform packages with npm trusted publishing
-        run: pnpm --filter @minip2p/node exec napi prepublish -t npm --no-gh-release
+        run: pnpm --filter @minip2p/node native:prepublish
 
   publish-typescript:
     name: Publish to npm

@@ -170,19 +170,19 @@ jobs:
         run: node react-native/scripts/check-android-elf.mjs
       - run: pnpm --workspace-root example prebuild
       - name: Build both Android ABIs
-        working-directory: bindings/ts/react-native/example/android
+        working-directory: examples/react-native/android
         run: ./gradlew :app:assembleDebug -PreactNativeArchitectures=arm64-v8a,x86_64
       - name: Validate 16 KiB APK zip alignment
         run: |
           "$ANDROID_HOME/build-tools/36.0.0/zipalign" \
             -c -P 16 -v 4 \
-            react-native/example/android/app/build/outputs/apk/debug/app-debug.apk
+            ../../examples/react-native/android/app/build/outputs/apk/debug/app-debug.apk
       - name: Monitor native sizes
         run: node react-native/scripts/check-native-size.mjs android
       - uses: actions/upload-artifact@v7
         with:
           name: minip2p-android-debug
-          path: bindings/ts/react-native/example/android/app/build/outputs/apk/debug/app-debug.apk
+          path: examples/react-native/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
   ios:

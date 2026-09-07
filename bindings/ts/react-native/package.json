@@ -69,7 +69,7 @@
     "ubrn:generate": "node scripts/generate-bindings.mjs",
     "ubrn:ios": "IPHONEOS_DEPLOYMENT_TARGET=15.1 ubrn build ios --release --config ubrn.config.yaml --and-generate && node scripts/normalize-generated.mjs && node scripts/generate-codegen.mjs && node scripts/normalize-generated.mjs",
     "ubrn:android": "env -u LIBCLANG_PATH ANDROID_HOME=${ANDROID_HOME:-$HOME/Library/Android/sdk} ANDROID_NDK_HOME=${ANDROID_NDK_HOME:-$HOME/Library/Android/sdk/ndk/28.2.13676358} ubrn build android --release --config ubrn.config.yaml --and-generate && node scripts/normalize-generated.mjs && node scripts/generate-codegen.mjs && node scripts/normalize-generated.mjs",
-    "clean": "del-cli android/.cxx android/build example/android/build example/android/app/build example/ios/build lib",
+    "clean": "del-cli android/.cxx android/build lib",
     "build": "bob build && node scripts/normalize-generated.mjs",
     "prepack": "pnpm build && node scripts/check-package-native.mjs",
     "test": "vitest run --config ../../../vitest.config.ts --root .",

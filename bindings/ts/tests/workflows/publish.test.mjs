@@ -35,7 +35,7 @@ test("Node platform packages carry npm provenance repository metadata", async ()
   await Promise.all(
     nodePlatforms.map(async (platform) => {
       const manifestUrl = new URL(
-        `../../node/npm/${platform.target}/package.json`,
+        `../../node-platforms/${platform.target}/package.json`,
         import.meta.url
       );
       const manifest = JSON.parse(await readFile(manifestUrl, "utf-8"));

@@ -2,9 +2,9 @@ packages:
   - docs
   - bindings/ts/core
   - bindings/ts/node
-  - bindings/ts/node/npm/*
+  - bindings/ts/node-platforms/*
   - bindings/ts/react-native
-  - bindings/ts/react-native/example
+  - examples/react-native
   - bindings/ts/test-fixtures
 
 allowBuilds:
