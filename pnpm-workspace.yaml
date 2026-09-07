@@ -78,6 +78,9 @@ minimumReleaseAgeExclude:
 
 nodeLinker: hoisted
 
+# Install explicitly before Turbo launches parallel pnpm scripts.
+verifyDepsBeforeRun: false
+
 saveExact: true
 
 patchedDependencies:

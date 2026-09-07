@@ -10,7 +10,7 @@ installs v4 for Astro.
 ## Requirements
 
 - Node.js 24.20 or newer
-- pnpm 11.25.0
+- pnpm 12.3.4
 
 ## Work locally
 
