@@ -5,9 +5,17 @@ import react from "ultracite/oxlint/react";
 export default defineConfig({
   extends: [core, react],
   ignorePatterns: [
+    "**/*",
+    "!**/",
+    "!bindings/ts/**",
+    "!docs/*.ts",
+    "!/*.ts",
+    "!/*.json",
+    "!/*.yaml",
     ...(core.ignorePatterns ?? []),
     "**/dist",
     "**/lib",
+    "**/generated/**",
     "bindings/ts/react-native/example/android",
     "bindings/ts/react-native/example/ios",
     "bindings/ts/react-native/src/NativeMinip2p.ts",
