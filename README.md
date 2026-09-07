@@ -23,9 +23,8 @@ The result is a set of reusable protocol state machines and a synchronous
 
 Install minip2p:
 
-```toml
-[dependencies]
-minip2p-rs = "0.5.3"
+```bash
+cargo add minip2p-rs
 ```
 
 Then create an endpoint:
@@ -60,8 +59,8 @@ background task. Event waits accept an absolute `Instant`, a relative
 QUIC is the default. Turn on the `tcp` feature to listen on TCP as well, or
 TCP only. The dial address picks the transport:
 
-```toml
-minip2p-rs = { version = "0.5.3", features = ["tcp"] }
+```bash
+cargo add minip2p-rs --features tcp
 ```
 
 ```rust

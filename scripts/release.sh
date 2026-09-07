@@ -129,7 +129,7 @@ else
   documentation_files=()
   while IFS= read -r file; do
     documentation_files+=("$file")
-  done < <(rg -l "minip2p-rs[^[:alnum:]]|version = \"$current_version\"" README.md docs \
+  done < <(rg -l "minip2p-rs[^[:alnum:]]|version = \"$current_version\"" README.md docs crates \
     --glob '*.md' --glob '*.mdx' --glob 'Cargo.toml')
   if [[ ${#documentation_files[@]} -gt 0 ]]; then
     perl -pi -e "s/\\Q$current_version\\E/$version/g" "${documentation_files[@]}"

@@ -34,14 +34,14 @@ workspace — use `--manifest-path fuzz/Cargo.toml`.
 Publish a release end to end with:
 
 ```bash
-just release 0.3.2
+just release <version>
 ```
 
 The command bumps every public package and local dependency, regenerates
 lockfiles, waits for push CI, publishes the GitHub release, waits for the native
 build and registry workflow, and verifies crates.io and npm. The default path
 leaves the full matrix to GitHub to avoid running it twice; use
-`just release 0.3.2 --full-local` to run it locally before pushing as well.
+`just release <version> --full-local` to run it locally before pushing as well.
 
 
 ## Architecture

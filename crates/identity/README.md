@@ -171,7 +171,7 @@ Enable Ed25519 key generation in `no_std`:
 ```toml
 [dependencies]
 minip2p-identity = { path = "crates/identity", default-features = false, features = ["ed25519"] }
-rand_core = { version = "0.6.4", default-features = false }
+rand_core = { default-features = false }
 ```
 
 ## Scope
