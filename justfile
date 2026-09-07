@@ -112,30 +112,30 @@ package-check:
     cargo metadata --no-deps --format-version 1 | jq -e '.packages[] | select(.name == "minip2p-rs") | .features["relay-server"] == ["std", "dep:minip2p-relay-server"]'
 
 docs-site:
-    cd docs && pnpm run check
+    pnpm docs:check
     cargo check --manifest-path docs/snippets/quickstart/Cargo.toml
     cargo check --manifest-path docs/snippets/custom-stream/Cargo.toml
 
 bindings-check:
-    cd bindings/ts && pnpm typecheck
-    cd bindings/ts && pnpm --filter @minip2p/node native:build
-    cd bindings/ts && pnpm test
-    cd bindings/ts && pnpm lint
-    cd bindings/ts && pnpm build
-    cd bindings/ts && pnpm rn:generate
+    pnpm typecheck
+    pnpm --filter @minip2p/node native:build
+    pnpm test
+    pnpm lint
+    pnpm build:bindings
+    pnpm rn:generate
     test -z "$(git status --porcelain)"
 
 bindings-format:
-    cd bindings/ts && pnpm format
+    pnpm format
 
 bindings-generate:
-    cd bindings/ts && pnpm rn:generate
+    pnpm rn:generate
 
 bindings-ios:
-    cd bindings/ts && pnpm rn:ios
+    pnpm rn:ios
 
 bindings-android:
-    cd bindings/ts && pnpm rn:android
+    pnpm rn:android
 
 bench:
     scripts/run-benches.sh wall
@@ -144,7 +144,7 @@ bench-ir:
     scripts/run-benches.sh ir
 
 bench-node:
-    cd bindings/ts && pnpm --filter @minip2p/node bench
+    pnpm --filter @minip2p/node bench
 
 bench-results-test:
     python3 -m unittest discover -s bench -p 'test_*.py'

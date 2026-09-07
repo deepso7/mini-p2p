@@ -1,12 +1,14 @@
 packages:
-  - core
-  - node
-  - node/npm/*
-  - react-native
-  - react-native/example
-  - test-fixtures
+  - docs
+  - bindings/ts/core
+  - bindings/ts/node
+  - bindings/ts/node/npm/*
+  - bindings/ts/react-native
+  - bindings/ts/react-native/example
+  - bindings/ts/test-fixtures
 
 allowBuilds:
+  "@scarf/scarf": true
   esbuild: true
 
 catalog:
@@ -18,6 +20,8 @@ catalog:
   typescript: 7.0.2
 
 minimumReleaseAgeExclude:
+  - blume@1.6.3
+  - katex@0.18.6
   - "@expo/cli@56.1.22"
   - "@expo/inline-modules@0.0.15"
   - "@expo/local-build-cache-provider@56.0.11"
@@ -36,4 +40,4 @@ nodeLinker: hoisted
 saveExact: true
 
 patchedDependencies:
-  uniffi-bindgen-react-native@0.31.0-5: react-native/patches/uniffi-bindgen-react-native@0.31.0-5.patch
+  uniffi-bindgen-react-native@0.31.0-5: bindings/ts/react-native/patches/uniffi-bindgen-react-native@0.31.0-5.patch

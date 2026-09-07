@@ -1,24 +1,18 @@
 {
+  "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
     "declaration": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["DOM", "ES2023", "ESNext.Disposable"],
+    "lib": [
+      "DOM",
+      "ES2023",
+      "ESNext.Disposable"
+    ],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "rootDir": "src",
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "ES2022",
-    "verbatimModuleSyntax": true
+    "target": "ES2022"
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ]
 }

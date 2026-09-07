@@ -1,19 +1,22 @@
 {
-  "name": "minip2p-typescript",
+  "name": "minip2p-workspace",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
     "example": "pnpm --filter react-native-minip2p-example",
-    "format": "ultracite fix",
-    "lint": "ultracite check",
+    "format": "ultracite fix bindings/ts docs/blume.config.ts package.json pnpm-workspace.yaml turbo.json tsconfig.base.json vitest.config.ts oxlint.config.ts oxfmt.config.ts",
+    "lint": "ultracite check bindings/ts docs/blume.config.ts package.json pnpm-workspace.yaml turbo.json tsconfig.base.json vitest.config.ts oxlint.config.ts oxfmt.config.ts",
     "test": "turbo run test",
-    "test:workflows": "node --test tests/workflows/*.test.mjs",
+    "test:workflows": "node --test bindings/ts/tests/workflows/*.test.mjs",
     "typecheck": "turbo run typecheck",
     "rn:android": "pnpm --filter @minip2p/react-native ubrn:android",
     "rn:generate": "pnpm --filter @minip2p/react-native ubrn:generate",
-    "rn:ios": "pnpm --filter @minip2p/react-native ubrn:ios"
+    "rn:ios": "pnpm --filter @minip2p/react-native ubrn:ios",
+    "docs:dev": "pnpm --filter minip2p-docs dev",
+    "docs:check": "pnpm --filter minip2p-docs check",
+    "build:bindings": "turbo run build --filter=\"@minip2p/*\""
   },
   "devDependencies": {
     "oxfmt": "0.66.0",

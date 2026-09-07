@@ -5,6 +5,13 @@ on:
     branches: [main]
     paths:
       - "bindings/**"
+      - "package.json"
+      - "pnpm-*.yaml"
+      - "*.config.ts"
+      - "tsconfig.base.json"
+      - "turbo.json"
+      - ".nvmrc"
+      - "Cargo.lock"
       - "crates/ffi/**"
       - "crates/ffi-core/**"
       - "crates/nodejs/**"
@@ -15,6 +22,13 @@ on:
   pull_request:
     paths:
       - "bindings/**"
+      - "package.json"
+      - "pnpm-*.yaml"
+      - "*.config.ts"
+      - "tsconfig.base.json"
+      - "turbo.json"
+      - ".nvmrc"
+      - "Cargo.lock"
       - "crates/ffi/**"
       - "crates/ffi-core/**"
       - "crates/nodejs/**"
@@ -35,9 +49,6 @@ concurrency:
 jobs:
   generated-and-typescript:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: bindings/ts
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -56,7 +67,7 @@ jobs:
       - run: pnpm --filter @minip2p/node native:build
       - run: pnpm test
       - run: pnpm lint
-      - run: pnpm build
+      - run: pnpm build:bindings
       - run: pnpm --filter @minip2p/react-native test:built
       - run: pnpm rn:generate
       - name: Generated files are current

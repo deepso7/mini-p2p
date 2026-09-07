@@ -52,7 +52,7 @@ jobs:
           toolchain: "1.91"
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm --workspace-root install --frozen-lockfile
       - name: Build addon
         shell: bash
         run: pnpm --filter @minip2p/node native:build:target --target ${{ matrix.target }} -- --locked
@@ -71,7 +71,7 @@ jobs:
       - shell: bash
         run: |
           pnpm --filter @minip2p/node exec vitest run \
-            --config ../vitest.config.ts \
+            --config ../../../vitest.config.ts \
             --root . \
             --no-file-parallelism
 
@@ -124,9 +124,9 @@ jobs:
               cargo build --release --locked -p minip2p-relay-server-example
               mkdir -p ../../target/debug
               cp ../../target/release/minip2p-relay ../../target/debug/minip2p-relay
-              pnpm install --frozen-lockfile
+              pnpm --workspace-root install --frozen-lockfile
               pnpm --filter @minip2p/node exec vitest run \
-                --config ../vitest.config.ts \
+                --config ../../../vitest.config.ts \
                 --root . \
                 --no-file-parallelism
             '
@@ -164,11 +164,11 @@ jobs:
       - name: Install cargo-ndk
         run: cargo install cargo-ndk --version 4.1.2 --locked
       - uses: Swatinem/rust-cache@v2
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm rn:android
+      - run: pnpm --workspace-root install --frozen-lockfile
+      - run: pnpm --workspace-root rn:android
       - name: Validate Android ELF alignment and allocator hooks
         run: node react-native/scripts/check-android-elf.mjs
-      - run: pnpm example prebuild
+      - run: pnpm --workspace-root example prebuild
       - name: Build both Android ABIs
         working-directory: bindings/ts/react-native/example/android
         run: ./gradlew :app:assembleDebug -PreactNativeArchitectures=arm64-v8a,x86_64
@@ -204,8 +204,8 @@ jobs:
         with:
           targets: aarch64-apple-ios,aarch64-apple-ios-sim
       - uses: Swatinem/rust-cache@v2
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm rn:ios
+      - run: pnpm --workspace-root install --frozen-lockfile
+      - run: pnpm --workspace-root rn:ios
       - name: Validate XCFramework slices
         run: |
           lipo -info react-native/build/Minip2pFfi.xcframework/ios-arm64/libminip2p_ffi.a

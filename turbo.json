@@ -1,15 +1,33 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [".nvmrc", "pnpm-lock.yaml", "pnpm-workspace.yaml"],
-  "globalEnv": ["NODE_ENV"],
+  "globalDependencies": [
+    ".nvmrc",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "tsconfig.base.json"
+  ],
+  "globalEnv": [
+    "NODE_ENV"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "tsconfig.build.json"],
-      "outputs": ["dist/**", "lib/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "tsconfig.build.json"
+      ],
+      "outputs": [
+        "dist/**",
+        "lib/**"
+      ]
     },
     "build:android": {
-      "env": ["ANDROID_HOME", "ORG_GRADLE_PROJECT_newArchEnabled"],
+      "env": [
+        "ANDROID_HOME",
+        "ORG_GRADLE_PROJECT_newArchEnabled"
+      ],
       "inputs": [
         "package.json",
         "android",
@@ -53,7 +71,7 @@
         "$TURBO_ROOT$/vitest.config.ts",
         "src/**",
         "tests/**",
-        "$TURBO_ROOT$/test-fixtures/**"
+        "$TURBO_ROOT$/bindings/ts/test-fixtures/**"
       ],
       "outputs": []
     },
@@ -61,9 +79,20 @@
       "cache": false
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
-      "inputs": ["$TURBO_DEFAULT$", "tsconfig.json"],
+      "dependsOn": [
+        "^typecheck"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "tsconfig.json"
+      ],
       "outputs": []
+    },
+    "minip2p-docs#build": {
+      "cache": false,
+      "outputs": [
+        "dist/**"
+      ]
     }
   }
 }

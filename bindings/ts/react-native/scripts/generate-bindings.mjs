@@ -5,7 +5,7 @@ import path from "node:path";
 import process from "node:process";
 
 const packageRoot = path.resolve(import.meta.dirname, "..");
-const workspaceRoot = path.resolve(packageRoot, "..");
+const workspaceRoot = path.resolve(packageRoot, "../../..");
 const rustRoot = path.resolve(packageRoot, "../../..");
 const libraryExtension =
   {

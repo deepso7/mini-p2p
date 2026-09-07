@@ -10,6 +10,8 @@ TypeScript bindings for [minip2p](https://minip2p.com).
 
 Platform adapters implement `@minip2p/core/backend` and re-export the public SDK types. See [FEATURES.md](./FEATURES.md) for the Rust-to-TypeScript capability map.
 
+Run from the repository root. Docs and bindings share one pnpm workspace and lockfile.
+
 ```sh
 pnpm install --frozen-lockfile
 pnpm typecheck

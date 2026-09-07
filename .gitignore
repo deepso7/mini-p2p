@@ -14,3 +14,6 @@ __pycache__/
 
 code-ref/
 .repos/
+
+node_modules/
+.turbo/

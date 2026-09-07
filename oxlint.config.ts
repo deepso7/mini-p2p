@@ -8,10 +8,10 @@ export default defineConfig({
     ...(core.ignorePatterns ?? []),
     "**/dist",
     "**/lib",
-    "react-native/example/android",
-    "react-native/example/ios",
-    "react-native/src/NativeMinip2p.ts",
-    "react-native/src/native.tsx",
+    "bindings/ts/react-native/example/android",
+    "bindings/ts/react-native/example/ios",
+    "bindings/ts/react-native/src/NativeMinip2p.ts",
+    "bindings/ts/react-native/src/native.tsx",
   ],
   // Match ultracite's ESLint core (off). Oxlint 1.81 started failing
   // function-hoisted helpers used before their declarations in tests/scripts.

@@ -144,7 +144,7 @@ else
   echo "release: regenerating lockfiles"
   cargo metadata --format-version 1 >/dev/null
   cargo metadata --manifest-path fuzz/Cargo.toml --format-version 1 >/dev/null
-  pnpm --dir bindings/ts install --lockfile-only --ignore-scripts
+  pnpm install --lockfile-only --ignore-scripts
 
   echo "release: validating release metadata"
   metadata="$(cargo metadata --no-deps --format-version 1)"

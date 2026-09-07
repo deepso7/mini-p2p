@@ -10,19 +10,21 @@ lives in `md/`; `.blume/` and `dist/` are generated and must not be edited.
 
 ## Work locally
 
+Run from the repository root:
+
 ```bash
 pnpm install --frozen-lockfile
-pnpm dev
+pnpm docs:dev
 ```
 
 Run the complete docs check before opening a pull request:
 
 ```bash
-pnpm check
+pnpm docs:check
 ```
 
 This runs Blume's project diagnostics, an isolated production build (safe
-alongside `pnpm dev`), and link validation.
+alongside `pnpm docs:dev`), and link validation.
 From the repository root, the same check is available as:
 
 ```bash

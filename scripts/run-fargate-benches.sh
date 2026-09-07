@@ -15,7 +15,7 @@ mkdir -p target/bench-results
 
 scripts/run-benches.sh ir
 scripts/run-benches.sh wall
-pnpm --dir bindings/ts --filter @minip2p/node bench
+pnpm --filter @minip2p/node bench
 
 python3 scripts/bench_results.py merge \
   target/bench-results/rust-micro.json \

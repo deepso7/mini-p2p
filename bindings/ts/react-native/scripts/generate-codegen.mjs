@@ -12,7 +12,7 @@ import path from "node:path";
 import process from "node:process";
 
 const packageRoot = path.resolve(import.meta.dirname, "..");
-const workspaceRoot = path.resolve(packageRoot, "..");
+const workspaceRoot = path.resolve(packageRoot, "../../..");
 const cli = path.join(
   workspaceRoot,
   "node_modules",

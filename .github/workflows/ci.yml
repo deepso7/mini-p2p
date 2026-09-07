@@ -47,10 +47,8 @@ jobs:
             docs/snippets/quickstart
             docs/snippets/custom-stream
           save-if: ${{ github.ref == 'refs/heads/main' }}
-      - run: pnpm install --frozen-lockfile
-        working-directory: docs
-      - run: pnpm run check
-        working-directory: docs
+      - run: pnpm --filter minip2p-docs install --frozen-lockfile
+      - run: pnpm docs:check
       - run: scripts/test-relay-installer.sh
       - run: cargo check --manifest-path docs/snippets/quickstart/Cargo.toml
       - run: cargo check --manifest-path docs/snippets/custom-stream/Cargo.toml
