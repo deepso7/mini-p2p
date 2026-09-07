@@ -2,7 +2,7 @@
 
 FROM node:24-bookworm@sha256:be23f54a88d34e8824c741b19b91064094f92c1c97b194144bfc8b50d67258e2 AS toolchain
 
-ARG PNPM_VERSION=11.24.0
+ARG PNPM_VERSION=11.25.0
 ARG BUILD_JOBS=2
 
 ENV CARGO_HOME=/usr/local/cargo \
@@ -59,7 +59,8 @@ FROM toolchain AS builder
 
 WORKDIR /minip2p
 
-COPY bindings/ts/pnpm-lock.yaml bindings/ts/pnpm-workspace.yaml bindings/ts/package.json bindings/ts/
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY docs/package.json docs/
 COPY bindings/ts/core/package.json bindings/ts/core/
 COPY bindings/ts/node/package.json bindings/ts/node/
 COPY bindings/ts/node/npm/ bindings/ts/node/npm/
@@ -67,7 +68,7 @@ COPY bindings/ts/react-native/package.json bindings/ts/react-native/
 COPY bindings/ts/react-native/example/package.json bindings/ts/react-native/example/
 COPY bindings/ts/react-native/patches/ bindings/ts/react-native/patches/
 COPY bindings/ts/test-fixtures/package.json bindings/ts/test-fixtures/
-RUN pnpm --dir bindings/ts install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY --from=planner /minip2p/recipe.json recipe.json
 RUN cargo chef cook --release --package minip2p-nodejs --recipe-path recipe.json \
@@ -82,7 +83,7 @@ RUN cargo chef cook --release --package minip2p-nodejs --recipe-path recipe.json
 
 COPY . .
 
-RUN pnpm --dir bindings/ts --filter @minip2p/node native:build \
+RUN pnpm --filter @minip2p/node native:build \
     && cargo bench -p minip2p-core --bench multiaddr --no-run \
     && cargo bench -p minip2p-yamux --bench data_path --no-run \
     && cargo bench -p minip2p-discovery --bench peer_book --no-run \

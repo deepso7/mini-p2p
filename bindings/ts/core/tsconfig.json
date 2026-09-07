@@ -2,17 +2,11 @@
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
-    "lib": [
-      "DOM",
-      "ES2023",
-      "ESNext.Disposable"
-    ],
+    "lib": ["DOM", "ES2023", "ESNext.Disposable"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "rootDir": "src",
     "target": "ES2022"
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts"]
 }

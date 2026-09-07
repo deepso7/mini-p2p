@@ -3,9 +3,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "@minip2p/react-native": [
-        "./src/index"
-      ]
+      "@minip2p/react-native": ["./src/index"]
     },
     "customConditions": [
       "minip2p-source",
@@ -13,9 +11,7 @@
       "react-native-strict-api"
     ],
     "jsx": "react-jsx",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,

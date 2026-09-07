@@ -165,6 +165,19 @@ just bench
 just fuzz 30       # requires nightly and cargo-fuzz
 ```
 
+Docs and TypeScript bindings share a pnpm workspace at the repository root.
+Use the Node version in `.nvmrc`, then run:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm --filter @minip2p/node native:build
+pnpm test
+pnpm lint
+pnpm build:bindings
+pnpm docs:check
+```
+
 Generate local API documentation with:
 
 ```bash

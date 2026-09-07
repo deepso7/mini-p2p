@@ -3,6 +3,10 @@
 The user-facing site is built with [Blume](https://useblume.dev/). Content
 lives in `md/`; `.blume/` and `dist/` are generated and must not be edited.
 
+Blume emits `js-yaml` imports into its generated runtime. The root `js-yaml`
+dependency keeps those imports on Blume's v5 API when the workspace also
+installs v4 for Astro.
+
 ## Requirements
 
 - Node.js 24.20 or newer
