@@ -12,6 +12,34 @@ Hermes. It supports iOS 15.1 or newer and Android API 24 or newer.
 npm install @minip2p/react-native
 ```
 
+## Allow local-network connections
+
+On iOS, a direct connection to the desktop on the LAN needs a local-network
+usage description. For Expo, merge this into `app.json` or the equivalent app
+config before rebuilding:
+
+```json
+{
+  "expo": {
+    "ios": {
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "Connect to a peer on your local network."
+      }
+    }
+  }
+}
+```
+
+For a bare React Native app, set `NSLocalNetworkUsageDescription` in the native
+iOS app's `Info.plist` instead.
+
+On Android, ensure the host `android/app/src/main/AndroidManifest.xml` declares
+`INTERNET`. The standard React Native template already includes it:
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
 Rebuild the application after installation. Expo Go cannot load minip2p, so an
 Expo SDK 57 app needs a development build:
 
@@ -22,17 +50,38 @@ npx expo run:ios
 # or: npx expo run:android
 ```
 
-## Connect and ping
+## Connect to a Node.js listener
 
 `useMinip2p` owns the endpoint for a component. It starts the endpoint after the
 component commits and closes it during cleanup.
+
+First, run the listener from the [Node.js quickstart](/typescript/setup-node#run-two-peers).
+Its default listener uses `127.0.0.1`, which is reachable only from the desktop
+itself. Change `listener.mjs` to bind the desktop's LAN address, for example
+`/ip4/192.168.1.42/udp/4001/quic-v1`, then restart it. Copy the complete address
+it prints:
+
+```text
+/ip4/192.168.1.42/udp/4001/quic-v1/p2p/12D3KooW...
+```
+
+Do not give the phone the original `127.0.0.1` address. It names the phone
+itself. Put the phone and desktop on the same LAN, avoid a guest network that
+isolates devices, and allow incoming UDP port 4001 through the desktop's
+firewall.
+
+Put this in `App.tsx` for a project without Expo Router, or in the route
+component for an Expo Router project. Replace the placeholder string in
+`remoteAddress` with the complete address printed by the running listener:
 
 ```tsx
 import { generateSecretKey, useMinip2p } from "@minip2p/react-native";
 import { useCallback, useMemo, useState } from "react";
 import { Button, Text, View } from "react-native";
 
-export function PeerScreen({ remoteAddress }: { remoteAddress: string }) {
+const remoteAddress = "YOUR_LISTENER_ADDRESS_HERE";
+
+export default function App() {
   const secretKey = useMemo(() => generateSecretKey(), []);
   const createConfig = useCallback(
     () => ({
@@ -81,19 +130,27 @@ export function PeerScreen({ remoteAddress }: { remoteAddress: string }) {
 Keep `createConfig` pure and stable for the component lifetime. Store the secret
 bytes in protected device storage when the peer needs a stable identity.
 
-## Enable local discovery
+Open the screen on the phone, tap "Connect and ping," and allow local-network
+access if iOS prompts. The result shows `directDialed` and the round-trip time,
+such as `directDialed · 4 ms`.
 
-Applications that use mDNS need local-network permissions.
+## Prepare mDNS permissions
+
+If the app enables `mdns: true`, add its Bonjour service type on iOS and the
+multicast permissions on Android. Merge the Expo settings into the same app
+config, keeping the usage description above. Bare iOS apps add the service to
+`Info.plist` instead.
 
 <Tabs>
   <Tab title="iOS / Expo config">
 
     ```json
     {
-      "ios": {
-        "infoPlist": {
-          "NSBonjourServices": ["_p2p._udp"],
-          "NSLocalNetworkUsageDescription": "Discover nearby peers."
+      "expo": {
+        "ios": {
+          "infoPlist": {
+            "NSBonjourServices": ["_p2p._udp"]
+          }
         }
       }
     }

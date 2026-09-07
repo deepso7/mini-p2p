@@ -11,7 +11,7 @@ paths are actually usable.
 
 | Capability | Cargo selection | Builder activation | Active behavior | Infrastructure |
 | --- | --- | --- | --- | --- |
-| Direct QUIC, Identify, Ping, custom streams | Base | None required | Authenticated QUIC streams and built-in protocols | A mutually reachable UDP path |
+| Direct QUIC, Identify, Ping, custom streams | Default (`std`, `quic`) | None required | Authenticated QUIC streams and built-in protocols | A mutually reachable UDP path |
 | Direct TCP | `tcp` | `.tcp(...)`, `.tcp_multiaddr(...)`, or `.bind_tcp(...)` | Noise-authenticated Yamux streams over TCP | A mutually reachable TCP path |
 | Portable TCP | `default-features = false, features = ["smoltcp"]` | `Endpoint::portable(...).smoltcp(...).listen(...).build()` | TCP, Noise XX, Yamux, Identify, Ping, and custom streams on a caller-driven loop | Your smoltcp device, interface, clock, and entropy |
 | Reachability probing | `nat` | `.autonat_server(server)` or a `NatConfig` with probe servers | AutoNAT probes and reachability state | Reachable AutoNAT server |
@@ -21,11 +21,13 @@ paths are actually usable.
 | Signed discovery | `discovery` | `.discovery()` or `.discovery_config(...)` | Signed beacons, shared peer book, and optional automatic dialing | A connected discovery peer; relay optional for direct-only addresses |
 | Local-link discovery | `mdns` | `.mdns()` or `.mdns_config(...)` | Local observations, shared peer book, and optional automatic dialing | Multicast-capable local network and interface |
 
-## Base API
+## Default std API
 
-Always available:
+The default dependency selection enables `std` and `quic`. `Endpoint` and
+`EndpointBuilder` require `std`; the QUIC methods below also require `quic`.
 
-- Bind: `bind_quic`, `bind_quic_multiaddr`, `bind_quic_dual_stack`
+Available on the std `Endpoint`:
+
 - Address publication: `listen`, `listen_all`
 - Direct connections: `dial`, `dial_ip4`, `dial_ip6`, `disconnect`
 - State: `peer_id`, `connected_peers`, `is_peer_ready`, `peer_info`
@@ -33,6 +35,16 @@ Always available:
   `close_stream_write`, `reset_stream`, `abandon_stream`
 - Driving: `poll`, `next_event`, `next_wake`, `wait_peer_ready`, `wait_ping_rtt`
 - Shutdown: `close`
+
+Available on `EndpointBuilder` with `quic`:
+
+- Bind: `quic`, `quic_multiaddr`, `quic_dual_multiaddr`, `quic_dual_stack`,
+  `bind_quic`, `bind_quic_multiaddr`, `bind_quic_dual_stack`
+- Configuration: `quic_limits`
+
+`EndpointBuilder::bind` is available with `std`, but needs at least one
+configured transport. Enable `quic` or `tcp` before adding a corresponding
+bind.
 
 ## TCP API
 
@@ -44,11 +56,15 @@ Compiled with `features = ["tcp"]`:
 
 ## Portable API
 
-With default features off, `Endpoint::portable(identity, entropy)` takes a
-`Transport` you supply. The `smoltcp` feature builds one shared embedded stack
-and can layer TCP with portable mDNS, pubsub, signed discovery, AutoNAT, and
-relay. Drive it with `poll(now)` and sleep until `next_deadline(now)`. minip2p
-does not read a system clock or start a runtime.
+With default features off, `Endpoint::portable(identity, entropy)` starts a
+`PortableEndpoint` builder. Call `build(transport)` with the caller-provided
+`Transport`. The resulting endpoint uses `poll(now)` and
+`next_deadline(now)` instead of the std endpoint's blocking wait methods. It
+never reads a system clock or starts a runtime.
+
+The `smoltcp` feature adds a shared embedded TCP stack. It includes portable
+mDNS; enable `pubsub` for pubsub and signed discovery, `portable-autonat` for
+AutoNAT, and `portable-relay` for relay circuits.
 
 ## NAT API
 
@@ -129,16 +145,28 @@ events](/typescript/networking-and-events) for configuration examples, and
 the [TypeScript API](/reference/typescript-api) reference for the full
 configuration map.
 
-## Exhaustive API docs
+## Full Rust API
 
-Generate rustdoc locally:
+[docs.rs publishes the Rust API for the latest release](https://docs.rs/minip2p-rs/latest/minip2p/).
+That reference uses the default `std` and `quic` features. Check the
+[published feature list](https://docs.rs/crate/minip2p-rs/latest/features) for
+the optional flags.
+
+Generate the default rustdoc locally:
 
 ```bash
-cargo doc --workspace --no-deps --open
+cargo doc -p minip2p-rs --no-deps --open
 ```
 
-To include every optional feature:
+To include every optional std feature in one local build:
 
 ```bash
-cargo doc -p minip2p-rs --features nat,pubsub,discovery,mdns,tcp --no-deps --open
+cargo doc -p minip2p-rs --features nat,pubsub,discovery,mdns,tcp,relay-server --no-deps --open
+```
+
+For the `no_std + alloc` view, disable defaults. Add the portable features
+your application uses, for example:
+
+```bash
+cargo doc -p minip2p-rs --no-default-features --features smoltcp,pubsub,portable-autonat,portable-relay --no-deps --open
 ```

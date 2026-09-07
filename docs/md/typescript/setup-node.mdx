@@ -8,12 +8,46 @@ description: Install @minip2p/node, connect to a peer, and measure a Ping RTT.
 ## Install
 
 ```bash
+mkdir minip2p-quickstart
+cd minip2p-quickstart
+npm init -y
 npm install @minip2p/node
 ```
 
-## Connect and ping
+## Run two peers
 
-Create `connect.mjs`:
+Open two terminals in this directory. In the first, create `listener.mjs`:
+
+```ts
+import { Minip2p, generateSecretKey } from "@minip2p/node";
+
+const endpoint = Minip2p.create({
+  agentVersion: "my-app/0.1.0",
+  secretKey: generateSecretKey(),
+  transports: {
+    quic: { listen: ["/ip4/127.0.0.1/udp/4001/quic-v1"] },
+  },
+});
+
+console.log("listening at");
+console.log(endpoint.listenAddrs()[0]);
+```
+
+Run it and leave it running:
+
+```bash
+node listener.mjs
+```
+
+It prints an address like this:
+
+```text
+listening at
+/ip4/127.0.0.1/udp/4001/quic-v1/p2p/12D3KooW...
+```
+
+Copy the complete address, including `/p2p/<peer-id>`. In the second terminal,
+create `connect.mjs`:
 
 ```ts
 import { Minip2p, generateSecretKey } from "@minip2p/node";
@@ -29,30 +63,38 @@ const endpoint = Minip2p.create({
 });
 
 try {
-  console.log("local peer", endpoint.peerId());
-  console.log(endpoint.listenAddrs().join("\n"));
-
   const connected = await endpoint.connectAddr(remoteAddress, {
     timeoutMs: 10_000,
   });
   await endpoint.waitPeerReady(connected.peerId, { timeoutMs: 10_000 });
   const rttMs = await endpoint.ping(connected.peerId, { timeoutMs: 5_000 });
 
-  console.log(`${connected.path.kind} · ${rttMs} ms`);
+  console.log(`connected over ${connected.path.kind}`);
+  console.log(`ping: ${rttMs} ms`);
 } finally {
   endpoint.close();
 }
 ```
 
-Run it with a complete peer multiaddress:
+Run it with the address from the listener:
 
 ```bash
-node connect.mjs /ip4/192.0.2.7/udp/4001/quic-v1/p2p/12D3KooW...
+node connect.mjs /ip4/127.0.0.1/udp/4001/quic-v1/p2p/12D3KooW...
 ```
 
-The address must end in `/p2p/<peer-id>`. `connectAddr` returns the first usable
-path. `waitPeerReady` then waits for the peer's Identify information before the
-application starts protocol work.
+The second terminal prints output like this:
+
+```text
+connected over directDialed
+ping: 4 ms
+```
+
+`connectAddr` returns the first usable path. `waitPeerReady` then waits for the
+peer's Identify information before the application starts protocol work.
+
+This listener accepts connections only from the same machine. To let a phone or
+another computer connect, bind a LAN interface instead, such as
+`/ip4/192.168.1.42/udp/4001/quic-v1`, and give it the printed address.
 
 `generateSecretKey()` creates a new peer identity on every run. Load the same
 secret bytes from protected storage when the peer needs a stable ID.
