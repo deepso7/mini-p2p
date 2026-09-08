@@ -19,6 +19,8 @@ catalog:
   react-native: 0.86.3
   typescript: 7.0.2
 
+minimumReleaseAge: 0
+
 nodeLinker: hoisted
 
 # Install explicitly before Turbo launches parallel pnpm scripts.
