@@ -16,13 +16,13 @@ workspace = true
 [features]
 default = ["std"]
 std = [
-    "minip2p-autonat/std",
-    "minip2p-core/std",
-    "minip2p-dcutr/std",
-    "minip2p-relay/std",
-    "minip2p-swarm/std",
-    "minip2p-transport/std",
-    "thiserror/std",
+  "minip2p-autonat/std",
+  "minip2p-core/std",
+  "minip2p-dcutr/std",
+  "minip2p-relay/std",
+  "minip2p-swarm/std",
+  "minip2p-transport/std",
+  "thiserror/std",
 ]
 
 [dependencies]

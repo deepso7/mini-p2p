@@ -25,19 +25,19 @@ This crate focuses on typed address handling and peer-qualified endpoint types.
 - `/quic-v1`
 - `/p2p/<peer-id>`
 
-DNS names are validated identically by the text and binary codecs: a name may not be empty or contain `/`, whitespace, or control characters. Without that, a binary name containing `/` would print as several components and re-parse into a *different* address.
+DNS names are validated identically by the text and binary codecs: a name may not be empty or contain `/`, whitespace, or control characters. Without that, a binary name containing `/` would print as several components and re-parse into a _different_ address.
 
 ## Transport classification
 
 `Multiaddr::transport_kind()` reports which base transport can dial an address, which is what a multi-transport host routes on:
 
-| Shape | `transport_kind()` |
-| --- | --- |
-| `/<host>/tcp/<port>` | `Some(TransportKind::Tcp)` |
+| Shape                        | `transport_kind()`          |
+| ---------------------------- | --------------------------- |
+| `/<host>/tcp/<port>`         | `Some(TransportKind::Tcp)`  |
 | `/<host>/udp/<port>/quic-v1` | `Some(TransportKind::Quic)` |
-| anything else | `None` |
+| anything else                | `None`                      |
 
-A trailing `/p2p/<peer-id>` makes an address a *peer* address rather than a transport address, so it classifies as `None`; strip it with `PeerAddr::transport()` first. `is_quic_transport()` and `is_tcp_transport()` answer the same question for one transport.
+A trailing `/p2p/<peer-id>` makes an address a _peer_ address rather than a transport address, so it classifies as `None`; strip it with `PeerAddr::transport()` first. `is_quic_transport()` and `is_tcp_transport()` answer the same question for one transport.
 
 ## Usage
 
@@ -65,12 +65,7 @@ let decoded = Multiaddr::from_bytes(&bytes).unwrap();
 assert_eq!(decoded, addr);
 ```
 
-Wire layout: each component is `<varint(multicodec)><value>`. Value
-shape depends on the protocol: fixed-size bytes for ip4/ip6 and for the
-tcp/udp ports (both two bytes, big-endian),
-varint-length-prefixed UTF-8 for dns*, varint-length-prefixed
-multihash for p2p, absent for quic-v1 and p2p-circuit. See
-<https://github.com/multiformats/multiaddr> for the full spec.
+Wire layout: each component is `<varint(multicodec)><value>`. Value shape depends on the protocol: fixed-size bytes for ip4/ip6 and for the tcp/udp ports (both two bytes, big-endian), varint-length-prefixed UTF-8 for dns*, varint-length-prefixed multihash for p2p, absent for quic-v1 and p2p-circuit. See <https://github.com/multiformats/multiaddr> for the full spec.
 
 Work with peer-qualified addresses:
 
@@ -100,7 +95,4 @@ minip2p-core = { path = "crates/core", default-features = false }
 
 ## Scope
 
-This crate intentionally does not include runtime networking, DNS resolution,
-or protocol handlers. It provides stable typed building blocks for higher-level
-transport/protocol crates, and it does not enforce transport-specific address
-shapes (that validation belongs in transport adapters).
+This crate intentionally does not include runtime networking, DNS resolution, or protocol handlers. It provides stable typed building blocks for higher-level transport/protocol crates, and it does not enforce transport-specific address shapes (that validation belongs in transport adapters).

@@ -18,11 +18,11 @@ default = ["std"]
 # Ethernet adds `smoltcp/medium-ethernet` from its own manifest.
 smoltcp = ["dep:minip2p-smoltcp"]
 std = [
-    "minip2p-core/std",
-    "minip2p-identity/std",
-    "thiserror/std",
-    "dep:socket2",
-    "dep:if-addrs",
+  "minip2p-core/std",
+  "minip2p-identity/std",
+  "thiserror/std",
+  "dep:socket2",
+  "dep:if-addrs",
 ]
 
 [dependencies]

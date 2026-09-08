@@ -86,8 +86,7 @@ keypair.public_key().verify(message, &signature)?;
 - `InvalidMultihash(String)`: multihash parser rejected bytes (includes parser message).
 - `InvalidSha256DigestLength { actual }`: SHA2-256 code was present with a non-32-byte digest.
 
-`PublicKey` decoding returns `PublicKeyError` for deterministic protobuf violations
-(wrong tags/order, invalid varints, unknown key type, or mismatched data length).
+`PublicKey` decoding returns `PublicKeyError` for deterministic protobuf violations (wrong tags/order, invalid varints, unknown key type, or mismatched data length).
 
 Example caller-side error handling:
 
@@ -179,6 +178,4 @@ cargo add rand_core --no-default-features
 
 ## Scope
 
-This crate covers key container encoding and peer ID computation/parsing.
-It includes feature-gated Ed25519 key generation and signature primitives
-(`ed25519`, enabled by default).
+This crate covers key container encoding and peer ID computation/parsing. It includes feature-gated Ed25519 key generation and signature primitives (`ed25519`, enabled by default).

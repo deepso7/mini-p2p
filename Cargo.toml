@@ -2,39 +2,39 @@
 resolver = "3"
 exclude = ["fuzz", "bindings"]
 members = [
-    "crates/autonat",
-    "crates/circuit",
-    "crates/core",
-    "crates/dcutr",
-    "crates/discovery",
-    "crates/ffi",
-    "crates/ffi-core",
-    "crates/identify",
-    "crates/identity",
-    "crates/mdns",
-    "crates/minip2p",
-    "crates/multistream-select",
-    "crates/nat",
-    "crates/nodejs",
-    "crates/noise",
-    "crates/ping",
-    "crates/platform",
-    "crates/pubsub",
-    "crates/relay",
-    "crates/relay-server",
-    "crates/secure-mux",
-    "crates/smoltcp",
-    "crates/swarm",
-    "crates/test-support",
-    "crates/tls",
-    "crates/transport",
-    "crates/yamux",
-    "transports/quic",
-    "transports/tcp",
-    "examples/chat",
-    "examples/common",
-    "examples/peer",
-    "examples/relay-server",
+  "crates/autonat",
+  "crates/circuit",
+  "crates/core",
+  "crates/dcutr",
+  "crates/discovery",
+  "crates/ffi",
+  "crates/ffi-core",
+  "crates/identify",
+  "crates/identity",
+  "crates/mdns",
+  "crates/minip2p",
+  "crates/multistream-select",
+  "crates/nat",
+  "crates/nodejs",
+  "crates/noise",
+  "crates/ping",
+  "crates/platform",
+  "crates/pubsub",
+  "crates/relay",
+  "crates/relay-server",
+  "crates/secure-mux",
+  "crates/smoltcp",
+  "crates/swarm",
+  "crates/test-support",
+  "crates/tls",
+  "crates/transport",
+  "crates/yamux",
+  "transports/quic",
+  "transports/tcp",
+  "examples/chat",
+  "examples/common",
+  "examples/peer",
+  "examples/relay-server",
 ]
 
 [workspace.package]
@@ -82,7 +82,7 @@ assertions_on_result_states = "warn"
 # Don't Do Bad Async Stuff - prevent deadlocks and concurrency bugs
 await_holding_lock = "warn"
 await_holding_refcell_ref = "warn"
-if_let_mutex = "warn"  # only relevant on editions before 2024
+if_let_mutex = "warn" # only relevant on editions before 2024
 large_futures = "warn"
 
 # Don't Do Unsafe Things with Memory

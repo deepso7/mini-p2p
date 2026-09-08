@@ -5,9 +5,7 @@ description: Compare Rust feature activation and TypeScript SDK configuration wi
 
 ## Rust
 
-Cargo features control what code is available. Builder methods control what
-runs inside an endpoint. External network infrastructure determines which
-paths are actually usable.
+Cargo features control what code is available. Builder methods control what runs inside an endpoint. External network infrastructure determines which paths are actually usable.
 
 | Capability | Cargo selection | Builder activation | Active behavior | Infrastructure |
 | --- | --- | --- | --- | --- |
@@ -23,28 +21,23 @@ paths are actually usable.
 
 ## Default std API
 
-The default dependency selection enables `std` and `quic`. `Endpoint` and
-`EndpointBuilder` require `std`; the QUIC methods below also require `quic`.
+The default dependency selection enables `std` and `quic`. `Endpoint` and `EndpointBuilder` require `std`; the QUIC methods below also require `quic`.
 
 Available on the std `Endpoint`:
 
 - Address publication: `listen`, `listen_all`
 - Direct connections: `dial`, `dial_ip4`, `dial_ip6`, `disconnect`
 - State: `peer_id`, `connected_peers`, `is_peer_ready`, `peer_info`
-- Streams: `add_protocol`, `open_stream`, `send_stream`,
-  `close_stream_write`, `reset_stream`, `abandon_stream`
+- Streams: `add_protocol`, `open_stream`, `send_stream`, `close_stream_write`, `reset_stream`, `abandon_stream`
 - Driving: `poll`, `next_event`, `next_wake`, `wait_peer_ready`, `wait_ping_rtt`
 - Shutdown: `close`
 
 Available on `EndpointBuilder` with `quic`:
 
-- Bind: `quic`, `quic_multiaddr`, `quic_dual_multiaddr`, `quic_dual_stack`,
-  `bind_quic`, `bind_quic_multiaddr`, `bind_quic_dual_stack`
+- Bind: `quic`, `quic_multiaddr`, `quic_dual_multiaddr`, `quic_dual_stack`, `bind_quic`, `bind_quic_multiaddr`, `bind_quic_dual_stack`
 - Configuration: `quic_limits`
 
-`EndpointBuilder::bind` is available with `std`, but needs at least one
-configured transport. Enable `quic` or `tcp` before adding a corresponding
-bind.
+`EndpointBuilder::bind` is available with `std`, but needs at least one configured transport. Enable `quic` or `tcp` before adding a corresponding bind.
 
 ## TCP API
 
@@ -56,30 +49,20 @@ Compiled with `features = ["tcp"]`:
 
 ## Portable API
 
-With default features off, `Endpoint::portable(identity, entropy)` starts a
-`PortableEndpoint` builder. Call `build(transport)` with the caller-provided
-`Transport`. The resulting endpoint uses `poll(now)` and
-`next_deadline(now)` instead of the std endpoint's blocking wait methods. It
-never reads a system clock or starts a runtime.
+With default features off, `Endpoint::portable(identity, entropy)` starts a `PortableEndpoint` builder. Call `build(transport)` with the caller-provided `Transport`. The resulting endpoint uses `poll(now)` and `next_deadline(now)` instead of the std endpoint's blocking wait methods. It never reads a system clock or starts a runtime.
 
-The `smoltcp` feature adds a shared embedded TCP stack. It includes portable
-mDNS; enable `pubsub` for pubsub and signed discovery, `portable-autonat` for
-AutoNAT, and `portable-relay` for relay circuits.
+The `smoltcp` feature adds a shared embedded TCP stack. It includes portable mDNS; enable `pubsub` for pubsub and signed discovery, `portable-autonat` for AutoNAT, and `portable-relay` for relay circuits.
 
 ## NAT API
 
 Compiled with `features = ["nat"]`:
 
 - Activation: `relay`, `autonat_server`, `nat_config`
-- Attempts: `connect`, `connect_addr`, `connect_with_addrs`,
-  `cancel_connect`, `wait_path`
+- Attempts: `connect`, `connect_addr`, `connect_with_addrs`, `cancel_connect`, `wait_path`
 - Events: `take_nat_events`, `next_nat_event`
 - State: `reachability`, `active_reservation`, `path`
 
-:::warning
-An AutoNAT server enables reachability probing but does not supply a relay path.
-Configure a relay for circuits, reservations, and relay-assisted DCUtR.
-:::
+:::warning An AutoNAT server enables reachability probing but does not supply a relay path. Configure a relay for circuits, reservations, and relay-assisted DCUtR. :::
 
 ## Pubsub API
 
@@ -93,22 +76,18 @@ Gossipsub is the default. Floodsub is an explicit engine selection.
 
 ## Discovery API
 
-Compiled with `features = ["discovery"]`, which includes the `nat` and
-`pubsub` Cargo features:
+Compiled with `features = ["discovery"]`, which includes the `nat` and `pubsub` Cargo features:
 
 - Activation: `discovery`, `discovery_config`
 - Shared policy: `peer_discovery_config`
 - State: `known_peers`
 - Events: `take_discovery_events`, `next_discovery_event`
 
-Activating discovery also activates default pubsub and the NAT agent. A relay
-remains optional for direct discovery, but required for relayed paths and
-relay-assisted punching.
+Activating discovery also activates default pubsub and the NAT agent. A relay remains optional for direct discovery, but required for relayed paths and relay-assisted punching.
 
 ## mDNS API
 
-Compiled with `features = ["mdns"]`, which includes the `nat` Cargo feature
-but not `pubsub`:
+Compiled with `features = ["mdns"]`, which includes the `nat` Cargo feature but not `pubsub`:
 
 - Activation: `mdns`, `mdns_config`
 - Shared policy: `peer_discovery_config`
@@ -116,18 +95,11 @@ but not `pubsub`:
 - Events: `take_discovery_events`, `next_discovery_event`
 - mDNS lifecycle: `shutdown` sends goodbyes and stops mDNS without closing the endpoint
 
-mDNS discovers peers only on multicast-capable local links. Its address claims
-remain unauthenticated until the selected transport verifies the peer identity.
-Automatic mDNS-triggered attempts are direct-only and never activate a
-configured relay or HOP CONNECT.
-`Endpoint::shutdown` sends TTL-zero goodbyes and permanently stops mDNS; QUIC
-and TCP keep working. With both `discovery` and `mdns` enabled, both sources
-use one bounded peer book and one automatic-dial state.
+mDNS discovers peers only on multicast-capable local links. Its address claims remain unauthenticated until the selected transport verifies the peer identity. Automatic mDNS-triggered attempts are direct-only and never activate a configured relay or HOP CONNECT. `Endpoint::shutdown` sends TTL-zero goodbyes and permanently stops mDNS; QUIC and TCP keep working. With both `discovery` and `mdns` enabled, both sources use one bounded peer book and one automatic-dial state.
 
 ## TypeScript
 
-Node.js and React Native accept the same `Minip2pConfig`. It selects the
-capabilities and infrastructure used by an endpoint.
+Node.js and React Native accept the same `Minip2pConfig`. It selects the capabilities and infrastructure used by an endpoint.
 
 | Capability | Configuration | Active behavior | Infrastructure |
 | --- | --- | --- | --- |
@@ -139,18 +111,11 @@ capabilities and infrastructure used by an endpoint.
 | Reachability probing | `autonatServers: [...]` | AutoNAT probes | Reachable AutoNAT server |
 | Relayed paths and DCUtR | `relays: [...]` | Reservations, relay race, fallback, hole punching | Reachable Circuit Relay v2 server |
 
-An AutoNAT server still does not provide a relay path. Discovery and mDNS can
-dial advertised direct addresses without a relay. See [Networking and
-events](/typescript/networking-and-events) for configuration examples, and
-the [TypeScript API](/reference/typescript-api) reference for the full
-configuration map.
+An AutoNAT server still does not provide a relay path. Discovery and mDNS can dial advertised direct addresses without a relay. See [Networking and events](/typescript/networking-and-events) for configuration examples, and the [TypeScript API](/reference/typescript-api) reference for the full configuration map.
 
 ## Full Rust API
 
-[docs.rs publishes the Rust API for the latest release](https://docs.rs/minip2p-rs/latest/minip2p/).
-That reference uses the default `std` and `quic` features. Check the
-[published feature list](https://docs.rs/crate/minip2p-rs/latest/features) for
-the optional flags.
+[docs.rs publishes the Rust API for the latest release](https://docs.rs/minip2p-rs/latest/minip2p/). That reference uses the default `std` and `quic` features. Check the [published feature list](https://docs.rs/crate/minip2p-rs/latest/features) for the optional flags.
 
 Generate the default rustdoc locally:
 
@@ -164,8 +129,7 @@ To include every optional std feature in one local build:
 cargo doc -p minip2p-rs --features nat,pubsub,discovery,mdns,tcp,relay-server --no-deps --open
 ```
 
-For the `no_std + alloc` view, disable defaults. Add the portable features
-your application uses, for example:
+For the `no_std + alloc` view, disable defaults. Add the portable features your application uses, for example:
 
 ```bash
 cargo doc -p minip2p-rs --no-default-features --features smoltcp,pubsub,portable-autonat,portable-relay --no-deps --open

@@ -35,5 +35,5 @@ cargo check -p minip2p-tls --no-default-features
 ## Features
 
 | Feature | Default | Description |
-|---------|---------|-------------|
-| `std`   | yes     | OS randomness convenience wrapper (`generate_certificate`) |
+| --- | --- | --- |
+| `std` | yes | OS randomness convenience wrapper (`generate_certificate`) |

@@ -12,7 +12,7 @@ ordered byte stream
   -> Yamux               (libp2p substreams)
 ```
 
-Relay circuits and TCP connections differ only in what the byte stream *is* — a relayed stream through a third peer, or a socket — so both drive this one component rather than each carrying its own copy of the state machine.
+Relay circuits and TCP connections differ only in what the byte stream _is_ — a relayed stream through a third peer, or a socket — so both drive this one component rather than each carrying its own copy of the state machine.
 
 ## Usage
 
@@ -55,7 +55,7 @@ Substreams are driven with `open_stream`, `send`, `close_stream_write`, and `res
 
 That matters because hosts differ: one races a direct dial against a relayed one and drops the loser, another de-duplicates connections per peer, an embedded node may accept whatever arrives. The session reports the verified peer and lets the caller apply its own rule, tearing the session down if it loses. `Established` is ordered ahead of any substream output, so a caller always sees the peer before it has to decide anything about a stream.
 
-Peer *verification* is not policy and is not optional: set `expected_peer` and Noise fails the handshake if the remote proves a different identity.
+Peer _verification_ is not policy and is not optional: set `expected_peer` and Noise fails the handshake if the remote proves a different identity.
 
 ## Errors
 

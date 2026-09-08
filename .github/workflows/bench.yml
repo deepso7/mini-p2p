@@ -20,9 +20,7 @@ env:
 jobs:
   aws-bench:
     if: >-
-      (github.event_name == 'release' && !github.event.release.prerelease) ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event.pull_request.head.repo.full_name == github.repository
+      (github.event_name == 'release' && !github.event.release.prerelease) || github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     environment: aws-bench
     timeout-minutes: 90
@@ -107,8 +105,7 @@ jobs:
 
   baseline:
     if: >-
-      github.event_name == 'release' &&
-      needs.aws-bench.outputs.complete == 'true'
+      github.event_name == 'release' && needs.aws-bench.outputs.complete == 'true'
     needs: [aws-bench]
     runs-on: ubuntu-latest
     permissions:
@@ -156,9 +153,7 @@ jobs:
 
   compare:
     if: >-
-      github.event_name == 'pull_request_target' &&
-      needs.aws-bench.result == 'success' &&
-      needs.aws-bench.outputs.complete == 'true'
+      github.event_name == 'pull_request_target' && needs.aws-bench.result == 'success' && needs.aws-bench.outputs.complete == 'true'
     needs: [aws-bench]
     runs-on: ubuntu-latest
     steps:
@@ -195,14 +190,7 @@ jobs:
         env:
           BASELINE_LABEL: ${{ steps.baseline.outputs.release }}
         run: >-
-          python3 scripts/bench_results.py compare
-          --current "$RUNNER_TEMP/current.json"
-          --baseline "$RUNNER_TEMP/baseline.json"
-          --output "$RUNNER_TEMP/comparison.md"
-          --baseline-label "$BASELINE_LABEL"
-          --check-ir-pins
-          --baseline-tree "${{ steps.baseline.outputs.sha }}"
-          --current-tree "${{ github.event.pull_request.head.sha }}"
+          python3 scripts/bench_results.py compare --current "$RUNNER_TEMP/current.json" --baseline "$RUNNER_TEMP/baseline.json" --output "$RUNNER_TEMP/comparison.md" --baseline-label "$BASELINE_LABEL" --check-ir-pins --baseline-tree "${{ steps.baseline.outputs.sha }}" --current-tree "${{ github.event.pull_request.head.sha }}"
       - name: Compare without baseline
         if: steps.baseline.outputs.available != 'true'
         run: python3 scripts/bench_results.py compare --current "$RUNNER_TEMP/current.json" --output "$RUNNER_TEMP/comparison.md"

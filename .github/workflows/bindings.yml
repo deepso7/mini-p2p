@@ -3,43 +3,7 @@ name: TypeScript bindings
 on:
   push:
     branches: [main]
-    paths:
-      - "bindings/**"
-      - "package.json"
-      - "pnpm-*.yaml"
-      - "*.config.ts"
-      - "docs/*.ts"
-      - "tsconfig.base.json"
-      - "turbo.json"
-      - ".nvmrc"
-      - "Cargo.lock"
-      - "crates/ffi/**"
-      - "crates/ffi-core/**"
-      - "crates/nodejs/**"
-      - "examples/react-native/**"
-      - "examples/common/**"
-      - "examples/relay-server/**"
-      - ".github/workflows/bindings.yml"
-      - ".github/workflows/bindings-native.yml"
   pull_request:
-    paths:
-      - "bindings/**"
-      - "package.json"
-      - "pnpm-*.yaml"
-      - "*.config.ts"
-      - "docs/*.ts"
-      - "tsconfig.base.json"
-      - "turbo.json"
-      - ".nvmrc"
-      - "Cargo.lock"
-      - "crates/ffi/**"
-      - "crates/ffi-core/**"
-      - "crates/nodejs/**"
-      - "examples/react-native/**"
-      - "examples/common/**"
-      - "examples/relay-server/**"
-      - ".github/workflows/bindings.yml"
-      - ".github/workflows/bindings-native.yml"
 
 permissions:
   contents: read

@@ -3,8 +3,7 @@ title: Rust troubleshooting
 description: Diagnose Rust connection, stream, discovery, and event problems by symptom.
 ---
 
-Start from the observable symptom. Rust methods return immediate failures as
-`minip2p::Error`. Problems found while driving arrive as events.
+Start from the observable symptom. Rust methods return immediate failures as `minip2p::Error`. Problems found while driving arrive as events.
 
 ## Common problems
 
@@ -41,12 +40,10 @@ Start from the observable symptom. Rust methods return immediate failures as
 
 ## Debug in order
 
-1. Confirm that both endpoints keep calling `poll`, `next_event`, `next_wake`,
-   or a focused wait.
+1. Confirm that both endpoints keep calling `poll`, `next_event`, `next_wake`, or a focused wait.
 2. Log the complete peer address and local peer ID.
 3. Distinguish an authenticated connection from `PeerReady`.
 4. Confirm both the Cargo feature and its builder method.
 5. Read the event queue owned by the capability you are using.
 
-For the complete capability map, see the
-[feature matrix](/reference/feature-matrix).
+For the complete capability map, see the [feature matrix](/reference/feature-matrix).

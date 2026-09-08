@@ -3,9 +3,7 @@ title: TypeScript troubleshooting
 description: Diagnose TypeScript Promise, stream, lifecycle, discovery, and mobile problems by symptom.
 ---
 
-Errors are public classes exported by `@minip2p/node` and
-`@minip2p/react-native`. Use `instanceof` for recovery and the typed `kind`
-fields for diagnostics.
+Errors are public classes exported by `@minip2p/node` and `@minip2p/react-native`. Use `instanceof` for recovery and the typed `kind` fields for diagnostics.
 
 ## Common problems
 
@@ -33,5 +31,4 @@ fields for diagnostics.
 | mDNS finds no peers | Permissions are missing, multicast is blocked, or peers do not share a link | Add the documented permissions and test on a multicast-capable network. |
 | The hook enters `failed` | Endpoint creation or the running driver failed | Use `isDriverFailure`, record its typed kind, and recreate at an application-owned level. |
 
-See the [TypeScript reference](/reference/typescript-api#public-errors) for the
-public error classes.
+See the [TypeScript reference](/reference/typescript-api#public-errors) for the public error classes.

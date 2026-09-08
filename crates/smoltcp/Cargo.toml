@@ -15,11 +15,11 @@ workspace = true
 
 [dependencies]
 smoltcp = { version = "0.14.0", default-features = false, features = [
-    "alloc",
-    "medium-ip",
-    "multicast",
-    "proto-ipv4",
-    "proto-ipv6",
-    "socket-tcp",
-    "socket-udp",
+  "alloc",
+  "medium-ip",
+  "multicast",
+  "proto-ipv4",
+  "proto-ipv6",
+  "socket-tcp",
+  "socket-udp",
 ] }

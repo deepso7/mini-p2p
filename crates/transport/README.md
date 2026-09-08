@@ -20,7 +20,7 @@ This crate defines the transport abstraction that concrete adapters implement �
 - **Which member dials this address?** `Multiaddr::transport_kind()` says whether an address is `/udp/quic-v1` or `/tcp`, and each member claims one shape.
 - **Which member owns this connection?** `ConnectionId` carries the namespace its allocator stamped, and each member claims the namespaces it allocates in.
 
-Both claims are checked when a member joins, so neither question can have two answers by the time it is asked. A member claims an address *shape* rather than an address family — one TCP transport serves `/ip4` and `/ip6` alike, matching how the adapters are actually built — and a member that splits by family internally, as the dual-stack QUIC transport does, claims both of its namespaces and keeps that split to itself. The namespaces a member names have to be every namespace it allocates in: a dial that produced an id from one it did not claim would hand back a connection nothing could route, so the set refuses and closes it instead. A refused join returns the transport with the reason, in a `RejectedTransport`, rather than dropping a bound socket where the caller can no longer reach it.
+Both claims are checked when a member joins, so neither question can have two answers by the time it is asked. A member claims an address _shape_ rather than an address family — one TCP transport serves `/ip4` and `/ip6` alike, matching how the adapters are actually built — and a member that splits by family internally, as the dual-stack QUIC transport does, claims both of its namespaces and keeps that split to itself. The namespaces a member names have to be every namespace it allocates in: a dial that produced an id from one it did not claim would hand back a connection nothing could route, so the set refuses and closes it instead. A refused join returns the transport with the reason, in a `RejectedTransport`, rather than dropping a bound socket where the caller can no longer reach it.
 
 A member that fails a `poll` does not cost its siblings the events they produced in the same round — those are delivered by the next `poll`, before any member is driven again, so a transport that stays broken cannot bury a healthy one's events or grow a queue behind itself.
 
@@ -107,12 +107,7 @@ impl Transport for MyTransport {
 }
 ```
 
-`send_datagram` is the one method most adapters should leave alone. It sends a
-single packet outside any connection, which is what DCUtR's simultaneous open
-needs before a connection exists to carry one, and the default answer is
-`TransportError::Unsupported` — the honest one for a stream transport, which has
-nowhere to put a lone packet. Callers read that as "not available here" rather
-than as a failed send.
+`send_datagram` is the one method most adapters should leave alone. It sends a single packet outside any connection, which is what DCUtR's simultaneous open needs before a connection exists to carry one, and the default answer is `TransportError::Unsupported` — the honest one for a stream transport, which has nowhere to put a lone packet. Callers read that as "not available here" rather than as a failed send.
 
 ## Time
 
@@ -137,7 +132,7 @@ impl BlockingTransport for MyTransport {
 
 The default implementation returns `WaitOutcome::Unsupported`, so `impl BlockingTransport for MyTransport {}` is enough to opt a transport into blocking drivers with a sleep fallback. A `no_std` host skips this entirely and idles however its platform allows, using `next_deadline()` to decide for how long.
 
-`BlockingTransport::wait_handle()` returns a cloneable, transport-neutral `WaitHandle` that interrupts a wait from another thread — a background task nudging a blocked drive loop after queueing work. Interrupting when no wait is active makes the *next* wait return immediately, so a handle cannot lose a wakeup to a race. `WaitHandle::combined` folds several into one for hosts driving more than one transport, and the default `WaitHandle::noop()` is inert for adapters with nothing to wake (that costs latency, never correctness).
+`BlockingTransport::wait_handle()` returns a cloneable, transport-neutral `WaitHandle` that interrupts a wait from another thread — a background task nudging a blocked drive loop after queueing work. Interrupting when no wait is active makes the _next_ wait return immediately, so a handle cannot lose a wakeup to a race. `WaitHandle::combined` folds several into one for hosts driving more than one transport, and the default `WaitHandle::noop()` is inert for adapters with nothing to wake (that costs latency, never correctness).
 
 The two defaults are only correct together, for a leaf transport. A transport that wraps another and forwards `wait_for_input` **must** also forward `wait_handle`, or callers get an inert handle while the wait still blocks inside the inner transport.
 

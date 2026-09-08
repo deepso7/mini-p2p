@@ -46,8 +46,7 @@ listening at
 /ip4/127.0.0.1/udp/4001/quic-v1/p2p/12D3KooW...
 ```
 
-Copy the complete address, including `/p2p/<peer-id>`. In the second terminal,
-create `connect.mjs`:
+Copy the complete address, including `/p2p/<peer-id>`. In the second terminal, create `connect.mjs`:
 
 ```ts
 import { Minip2p, generateSecretKey } from "@minip2p/node";
@@ -89,21 +88,14 @@ connected over directDialed
 ping: 4 ms
 ```
 
-`connectAddr` returns the first usable path. `waitPeerReady` then waits for the
-peer's Identify information before the application starts protocol work.
+`connectAddr` returns the first usable path. `waitPeerReady` then waits for the peer's Identify information before the application starts protocol work.
 
-This listener accepts connections only from the same machine. To let a phone or
-another computer connect, bind a LAN interface instead, such as
-`/ip4/192.168.1.42/udp/4001/quic-v1`, and give it the printed address.
+This listener accepts connections only from the same machine. To let a phone or another computer connect, bind a LAN interface instead, such as `/ip4/192.168.1.42/udp/4001/quic-v1`, and give it the printed address.
 
-`generateSecretKey()` creates a new peer identity on every run. Load the same
-secret bytes from protected storage when the peer needs a stable ID.
+`generateSecretKey()` creates a new peer identity on every run. Load the same secret bytes from protected storage when the peer needs a stable ID.
 
 ## Keep a service running
 
-A running endpoint keeps the Node.js process alive. Long-running applications
-should close it during shutdown. See [Endpoint lifecycle](/typescript/lifecycle)
-for signal handling and identity persistence.
+A running endpoint keeps the Node.js process alive. Long-running applications should close it during shutdown. See [Endpoint lifecycle](/typescript/lifecycle) for signal handling and identity persistence.
 
-Next: [Connections and streams](/typescript/connections-and-streams) or
-[Networking and events](/typescript/networking-and-events).
+Next: [Connections and streams](/typescript/connections-and-streams) or [Networking and events](/typescript/networking-and-events).

@@ -1,10 +1,7 @@
 ---
 name: pr-review
 description: >-
-  Orchestrated high-depth PR review for minip2p: planner + parallel micro-agents
-  (State/Parse/Security/Flow/Verify/Quality), then merge with confidence gating.
-  Small diffs stay single-pass. Use for /pr-review, /pr-review ultra, or
-  orchestrated multi-agent PR review.
+  Orchestrated high-depth PR review for minip2p: planner + parallel micro-agents (State/Parse/Security/Flow/Verify/Quality), then merge with confidence gating. Small diffs stay single-pass. Use for /pr-review, /pr-review ultra, or orchestrated multi-agent PR review.
 disable-model-invocation: true
 ---
 

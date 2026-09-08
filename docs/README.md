@@ -1,11 +1,8 @@
 # minip2p documentation
 
-The user-facing site is built with [Blume](https://useblume.dev/). Content
-lives in `md/`; `.blume/` and `dist/` are generated and must not be edited.
+The user-facing site is built with [Blume](https://useblume.dev/). Content lives in `md/`; `.blume/` and `dist/` are generated and must not be edited.
 
-Blume emits `js-yaml` imports into its generated runtime. The root `js-yaml`
-dependency keeps those imports on Blume's v5 API when the workspace also
-installs v4 for Astro.
+Blume emits `js-yaml` imports into its generated runtime. The root `js-yaml` dependency keeps those imports on Blume's v5 API when the workspace also installs v4 for Astro.
 
 ## Requirements
 
@@ -27,17 +24,13 @@ Run the complete docs check before opening a pull request:
 pnpm docs:check
 ```
 
-This runs Blume's project diagnostics, an isolated production build (safe
-alongside `pnpm docs:dev`), and link validation.
-From the repository root, the same check is available as:
+This runs Blume's project diagnostics, an isolated production build (safe alongside `pnpm docs:dev`), and link validation. From the repository root, the same check is available as:
 
 ```bash
 just docs-site
 ```
 
-The Rust programs under `snippets/` back the main copy-paste examples. Keep
-their corresponding MDX code blocks in sync and compile both fixtures after
-changing an example:
+The Rust programs under `snippets/` back the main copy-paste examples. Keep their corresponding MDX code blocks in sync and compile both fixtures after changing an example:
 
 ```bash
 cargo check --manifest-path docs/snippets/quickstart/Cargo.toml

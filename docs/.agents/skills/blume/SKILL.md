@@ -41,9 +41,7 @@ description: Welcome to my docs.
 
 Welcome! Use **Markdown** and built-in components — no imports required:
 
-:::note
-Blume ships callouts, cards, tabs, steps, and more.
-:::
+:::note Blume ships callouts, cards, tabs, steps, and more. :::
 ```
 
 Navigation, search, and page metadata are inferred from your files as you add them.

@@ -3,10 +3,7 @@ title: Register a protocol
 description: Register an application protocol, negotiate streams, exchange bytes, and close or abandon stream state on purpose.
 ---
 
-Application protocols use libp2p multistream-select negotiation over an
-authenticated connection. Both peers must register the same versioned
-protocol ID. Before opening a stream, connect the peers and wait for
-[`PeerReady`](/rust/concepts#connection-readiness).
+Application protocols use libp2p multistream-select negotiation over an authenticated connection. Both peers must register the same versioned protocol ID. Before opening a stream, connect the peers and wait for [`PeerReady`](/rust/concepts#connection-readiness).
 
 ```rust
 const ECHO_PROTOCOL: &str = "/my-app/echo/1.0.0";
@@ -16,14 +13,9 @@ let mut node = minip2p::Endpoint::builder()
     .bind_quic_dual_stack()?;
 ```
 
-You can also call `add_protocol` after binding. Registration affects inbound
-and outbound negotiation.
+You can also call `add_protocol` after binding. Registration affects inbound and outbound negotiation.
 
-:::warning
-`/ipfs/id/1.0.0` and `/ipfs/ping/1.0.0` are owned by the endpoint. Registering
-an ID in `RESERVED_PROTOCOL_IDS` fails with
-`minip2p::Error::Swarm(minip2p::SwarmError::ReservedProtocol { .. })`.
-:::
+:::warning `/ipfs/id/1.0.0` and `/ipfs/ping/1.0.0` are owned by the endpoint. Registering an ID in `RESERVED_PROTOCOL_IDS` fails with `minip2p::Error::Swarm(minip2p::SwarmError::ReservedProtocol { .. })`. :::
 
 ## Open an outbound stream
 
@@ -38,8 +30,7 @@ node.wait_peer_ready(&peer_id, Duration::from_secs(10))?
 let stream_id = node.open_stream(&peer_id, ECHO_PROTOCOL)?;
 ```
 
-`open_stream` starts negotiation and returns the allocated stream ID. Wait for
-the matching `Event::StreamReady` before writing:
+`open_stream` starts negotiation and returns the allocated stream ID. Wait for the matching `Event::StreamReady` before writing:
 
 ```rust
 loop {
@@ -65,17 +56,13 @@ loop {
 }
 ```
 
-Put this match in the application's ordinary event dispatcher. Do not discard
-events for other peers or streams while waiting for negotiation.
+Put this match in the application's ordinary event dispatcher. Do not discard events for other peers or streams while waiting for negotiation.
 
-QUIC is a byte stream: writes can be fragmented or coalesced. Add framing when
-one application message must be distinguishable from the next.
+QUIC is a byte stream: writes can be fragmented or coalesced. Add framing when one application message must be distinguishable from the next.
 
 ## Accept an inbound stream
 
-Inbound negotiation produces the same `StreamReady` event with
-`initiated_locally: false`. Track accepted stream IDs so later `StreamData`
-can be routed to the correct handler:
+Inbound negotiation produces the same `StreamReady` event with `initiated_locally: false`. Track accepted stream IDs so later `StreamData` can be routed to the correct handler:
 
 ```rust
 use std::collections::HashSet;
@@ -116,20 +103,12 @@ match event {
 | `reset_stream` | Abruptly terminate the stream while keeping terminal stream events visible. |
 | `abandon_stream` | Reset the stream, purge buffered matching events, and suppress later matching stream events. |
 
-Use `abandon_stream` when an application has permanently stopped consuming a
-stream. Calling it again while the abandon/reset is still pending is safe and
-keeps an ignored stream from filling focused wait buffers. After the stream is
-fully forgotten, a later call returns an error.
+Use `abandon_stream` when an application has permanently stopped consuming a stream. Calling it again while the abandon/reset is still pending is safe and keeps an ignored stream from filling focused wait buffers. After the stream is fully forgotten, a later call returns an error.
 
-The complete two-peer echo used in CI lives in
-[`docs/snippets/custom-stream`](https://github.com/deepso7/minip2p/tree/main/docs/snippets/custom-stream).
-That fixture rewrites wildcard listen addresses to loopback before printing
-them, the same way [Connect two peers](/rust/connect-peers) does.
+The complete two-peer echo used in CI lives in [`docs/snippets/custom-stream`](https://github.com/deepso7/minip2p/tree/main/docs/snippets/custom-stream). That fixture rewrites wildcard listen addresses to loopback before printing them, the same way [Connect two peers](/rust/connect-peers) does.
 
 ## Driver-owned streams
 
-When NAT, pubsub, or discovery drivers are active, they register and consume
-their own control-plane streams. Those events do not surface as application
-`StreamData`; use the matching NAT, pubsub, or discovery event APIs instead.
+When NAT, pubsub, or discovery drivers are active, they register and consume their own control-plane streams. Those events do not surface as application `StreamData`; use the matching NAT, pubsub, or discovery event APIs instead.
 
 Next: [Drive events](/rust/drive-events).

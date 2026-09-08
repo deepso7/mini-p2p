@@ -3,9 +3,7 @@ title: Start with TypeScript
 description: Choose Node.js or React Native, make the first connection, and continue with the shared TypeScript interface.
 ---
 
-minip2p has one TypeScript interface on Node.js and React Native. Setup and
-endpoint ownership differ by runtime. Connections, streams, events, pubsub,
-discovery, and NAT traversal work the same way after the endpoint starts.
+minip2p has one TypeScript interface on Node.js and React Native. Setup and endpoint ownership differ by runtime. Connections, streams, events, pubsub, discovery, and NAT traversal work the same way after the endpoint starts.
 
 ## Choose your runtime
 
@@ -34,8 +32,7 @@ Both packages expose the same application types and operations.
 
 ## The shared connection flow
 
-Every endpoint needs a 32-byte Ed25519 secret key. Reuse the same key when the
-peer needs a stable identity.
+Every endpoint needs a 32-byte Ed25519 secret key. Reuse the same key when the peer needs a stable identity.
 
 To connect:
 
@@ -44,8 +41,7 @@ To connect:
 3. Use `ping`, `openStream`, pubsub, or another operation.
 4. Close the endpoint when its owner shuts down.
 
-`connectAddr` resolves when minip2p has a usable direct or relayed path.
-`waitPeerReady` waits for Identify and returns the peer's supported protocols.
+`connectAddr` resolves when minip2p has a usable direct or relayed path. `waitPeerReady` waits for Identify and returns the peer's supported protocols.
 
 ## Continue
 
@@ -67,7 +63,11 @@ To connect:
   >
     Consume events and enable pubsub, discovery, mDNS, or NAT traversal.
   </Card>
-  <Card title="TypeScript reference" href="/reference/typescript-api" icon="library">
+  <Card
+    title="TypeScript reference"
+    href="/reference/typescript-api"
+    icon="library"
+  >
     Look up configuration, methods, events, streams, and errors.
   </Card>
 </CardGroup>
