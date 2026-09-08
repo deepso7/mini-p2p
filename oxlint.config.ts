@@ -19,9 +19,4 @@ export default defineConfig({
     "bindings/ts/react-native/src/NativeMinip2p.ts",
     "bindings/ts/react-native/src/native.tsx",
   ],
-  // Match ultracite's ESLint core (off). Oxlint 1.81 started failing
-  // function-hoisted helpers used before their declarations in tests/scripts.
-  rules: {
-    "no-use-before-define": "off",
-  },
 });

@@ -1,4 +1,4 @@
-/* oxlint-disable func-style -- Smoke-test helpers are hoisted below the installed-package checks. */
+/* oxlint-disable func-style -- Use named function declarations for script helpers. */
 
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -17,6 +17,10 @@ const modules = path.resolve(consumerRoot, "node_modules");
 const coreRoot = path.join(modules, "@minip2p/core");
 const reactNativeRoot = path.join(modules, "@minip2p/react-native");
 const nodeRoot = path.join(modules, "@minip2p/node");
+function readManifest(root) {
+  return JSON.parse(readFileSync(path.join(root, "package.json"), "utf-8"));
+}
+
 const coreManifest = readManifest(coreRoot);
 const reactNativeManifest = readManifest(reactNativeRoot);
 const nodeManifest = readManifest(nodeRoot);
@@ -27,6 +31,16 @@ if (
   throw new Error(
     `installed @minip2p/react-native requires core ${reactNativeManifest.dependencies?.["@minip2p/core"] ?? "missing"}, but ${coreManifest.version} is installed`
   );
+}
+
+function packageExport(manifest, condition) {
+  const target = manifest.exports?.["."]?.[condition];
+  if (typeof target !== "string" || !target.startsWith("./")) {
+    throw new Error(
+      `${manifest.name} has no valid ${condition} package export`
+    );
+  }
+  return target;
 }
 
 const coreEntry = packageExport(coreManifest, "default");
@@ -43,6 +57,14 @@ verifyHookLifecycle({
   bindAppStateSource: hookLifecycle.bindAppStateSource,
   mountEndpointLifecycle: hookLifecycle.mountEndpointLifecycle,
 });
+
+function requireNamedExport(file, expectedExport) {
+  const exports = namedExports(readFileSync(file, "utf-8"));
+  if (exports.has(expectedExport)) {
+    return;
+  }
+  throw new Error(`${file} is missing the ${expectedExport} public export`);
+}
 
 requireNamedExport(
   path.join(reactNativeRoot, packageExport(reactNativeManifest, "default")),
@@ -69,26 +91,3 @@ requireNamedExport(
 console.log(
   `smoke-tested installed @minip2p/core, @minip2p/react-native, and @minip2p/node ${coreManifest.version}`
 );
-
-function readManifest(root) {
-  return JSON.parse(readFileSync(path.join(root, "package.json"), "utf-8"));
-}
-
-function packageExport(manifest, condition) {
-  const target = manifest.exports?.["."]?.[condition];
-  if (typeof target !== "string" || !target.startsWith("./")) {
-    throw new Error(
-      `${manifest.name} has no valid ${condition} package export`
-    );
-  }
-  return target;
-}
-
-function requireNamedExport(file, expectedExport) {
-  const exports = namedExports(readFileSync(file, "utf-8"));
-  if (exports.has(expectedExport)) {
-    return;
-  }
-  throw new Error(`${file} is missing the ${expectedExport} public export`);
-}
-/* oxlint-disable func-style -- Smoke-test helpers are hoisted below the installed-package checks. */

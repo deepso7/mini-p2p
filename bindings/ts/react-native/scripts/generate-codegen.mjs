@@ -1,4 +1,4 @@
-/* oxlint-disable func-style -- The generator keeps its process runner below the generation steps. */
+/* oxlint-disable func-style -- Use named function declarations for script helpers. */
 
 import { spawnSync } from "node:child_process";
 import {
@@ -22,6 +22,19 @@ const cli = path.join(
   "bin.js"
 );
 
+function run(command, args, cwd) {
+  const result = spawnSync(command, args, {
+    cwd,
+    stdio: "inherit",
+  });
+  if (result.error !== undefined) {
+    throw result.error;
+  }
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
+}
+
 run(process.execPath, [cli, "codegen", "--source", "library"], packageRoot);
 
 const generatedJavaRoot = path.join(packageRoot, "android/generated/java");
@@ -44,16 +57,3 @@ rmSync(path.join(generatedJavaRoot, "com/facebook"), {
   force: true,
   recursive: true,
 });
-
-function run(command, args, cwd) {
-  const result = spawnSync(command, args, {
-    cwd,
-    stdio: "inherit",
-  });
-  if (result.error !== undefined) {
-    throw result.error;
-  }
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1);
-  }
-}

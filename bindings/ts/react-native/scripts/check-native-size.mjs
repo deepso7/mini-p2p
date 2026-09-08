@@ -1,4 +1,4 @@
-/* oxlint-disable func-style -- The script uses a hoisted formatting helper below its main flow. */
+/* oxlint-disable func-style -- Use named function declarations for script helpers. */
 
 import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
@@ -24,6 +24,10 @@ const artifacts =
         "ios-arm64-simulator":
           "build/Minip2pFfi.xcframework/ios-arm64-simulator/libminip2p_ffi.a",
       };
+
+function formatChange(change) {
+  return `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`;
+}
 
 for (const [name, relativePath] of Object.entries(artifacts)) {
   const bytes = statSync(path.join(packageRoot, relativePath)).size;
@@ -51,8 +55,4 @@ for (const [name, relativePath] of Object.entries(artifacts)) {
     }
     console.log(`::warning title=Native size regression::${message}`);
   }
-}
-
-function formatChange(change) {
-  return `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`;
 }
