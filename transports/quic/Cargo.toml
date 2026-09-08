@@ -37,3 +37,7 @@ minip2p-identity = { path = "../../crates/identity" }
 [[bench]]
 name = "idle_poll"
 harness = false
+
+[[bench]]
+name = "cost_probe"
+harness = false

@@ -19,9 +19,20 @@ enum Kind {
 }
 
 fn bind(kind: Kind) -> Endpoint {
+    bind_with_retry(kind, true)
+}
+
+fn bind_with_retry(kind: Kind, retry: bool) -> Endpoint {
     let builder = Endpoint::builder()
         .agent_version("minip2p-bench")
         .protocol(ECHO);
+    let builder = match kind {
+        Kind::Quic if !retry => builder.quic_limits(minip2p::QuicLimits {
+            require_address_validation: false,
+            ..minip2p::QuicLimits::default()
+        }),
+        _ => builder,
+    };
     match kind {
         Kind::Tcp => builder.bind_tcp("127.0.0.1:0"),
         Kind::Quic => builder.bind_quic("127.0.0.1:0"),
@@ -37,7 +48,11 @@ struct EchoServer {
 
 impl EchoServer {
     fn start(kind: Kind) -> Self {
-        let mut endpoint = bind(kind);
+        Self::start_with_retry(kind, true)
+    }
+
+    fn start_with_retry(kind: Kind, retry: bool) -> Self {
+        let mut endpoint = bind_with_retry(kind, retry);
         let address = endpoint.listen().expect("listen");
         let stop = Arc::new(AtomicBool::new(false));
         let worker_stop = Arc::clone(&stop);
@@ -203,11 +218,15 @@ impl Crossed {
 
 impl Pair {
     fn disconnected(kind: Kind) -> Self {
-        let server = EchoServer::start(kind);
+        Self::disconnected_with_retry(kind, true)
+    }
+
+    fn disconnected_with_retry(kind: Kind, retry: bool) -> Self {
+        let server = EchoServer::start_with_retry(kind, retry);
         let peer = server.address.peer_id().clone();
         Self {
             _server: server,
-            client: bind(kind),
+            client: bind_with_retry(kind, retry),
             peer,
         }
     }
@@ -316,6 +335,35 @@ fn suite(c: &mut Criterion, kind: Kind, transport: &str) {
             BatchSize::SmallInput,
         )
     });
+    group.bench_function("oneshot_64b", |b| {
+        b.iter_batched_ref(
+            || Pair::disconnected(kind),
+            |pair| {
+                pair.connect();
+                pair.echo(vec![0x5a; 64], 1);
+            },
+            BatchSize::SmallInput,
+        )
+    });
+    if matches!(kind, Kind::Quic) {
+        group.bench_function("setup_no_retry", |b| {
+            b.iter_batched_ref(
+                || Pair::disconnected_with_retry(kind, false),
+                Pair::connect,
+                BatchSize::SmallInput,
+            )
+        });
+        group.bench_function("oneshot_64b_no_retry", |b| {
+            b.iter_batched_ref(
+                || Pair::disconnected_with_retry(kind, false),
+                |pair| {
+                    pair.connect();
+                    pair.echo(vec![0x5a; 64], 1);
+                },
+                BatchSize::SmallInput,
+            )
+        });
+    }
     let mut ping = Pair::connected(kind);
     group.bench_function("ping", |b| b.iter(|| ping.ping()));
     let mut echo = Pair::connected(kind);

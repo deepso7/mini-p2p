@@ -79,3 +79,8 @@ minip2p-test-support = { path = "../test-support" }
 name = "endpoint_e2e"
 harness = false
 required-features = ["quic", "tcp"]
+
+[[bench]]
+name = "cost_probe"
+harness = false
+required-features = ["quic"]
