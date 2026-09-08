@@ -55,10 +55,10 @@
     "test": {
       "inputs": [
         "$TURBO_DEFAULT$",
-        "$TURBO_ROOT$/vitest.config.ts",
         "src/**",
         "tests/**",
-        "$TURBO_ROOT$/bindings/ts/test-fixtures/**"
+        "$TURBO_ROOT$/bindings/ts/test-fixtures/**",
+        "$TURBO_ROOT$/bindings/ts/core/src/**"
       ],
       "outputs": []
     },
