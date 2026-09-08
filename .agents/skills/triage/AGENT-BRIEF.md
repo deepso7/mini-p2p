@@ -41,7 +41,9 @@ State what is out of scope. This prevents the agent from gold-plating or making 
 ```markdown
 ## Agent Brief
 
-**Category:** bug / enhancement **Summary:** one-line description of what needs to happen
+**Category:** bug / enhancement
+
+**Summary:** one-line description of what needs to happen
 
 **Current behavior:** Describe what happens now. For bugs, this is the broken behavior. For enhancements, this is the status quo the feature builds on.
 
@@ -72,7 +74,9 @@ State what is out of scope. This prevents the agent from gold-plating or making 
 ```markdown
 ## Agent Brief
 
-**Category:** bug **Summary:** Skill description truncation drops mid-word, producing broken output
+**Category:** bug
+
+**Summary:** Skill description truncation drops mid-word, producing broken output
 
 **Current behavior:** When a skill description exceeds 1024 characters, it is truncated at exactly 1024 characters regardless of word boundaries. This produces descriptions that end mid-word (e.g. "Use when the user wants to confi").
 
@@ -101,7 +105,9 @@ State what is out of scope. This prevents the agent from gold-plating or making 
 ```markdown
 ## Agent Brief
 
-**Category:** enhancement **Summary:** Add `.out-of-scope/` directory support for tracking rejected feature requests
+**Category:** enhancement
+
+**Summary:** Add `.out-of-scope/` directory support for tracking rejected feature requests
 
 **Current behavior:** When a feature request is rejected, the issue is closed with a `wontfix` label and a comment. There is no persistent record of the decision or reasoning. Future similar requests require the maintainer to recall or search for the prior discussion.
 
@@ -133,7 +139,9 @@ For a PR, "Current behavior" describes the state of the diff, and the brief asks
 ```markdown
 ## Agent Brief
 
-**Category:** enhancement **Summary:** Finish the contributor's `--json` output flag for `triage list`
+**Category:** enhancement
+
+**Summary:** Finish the contributor's `--json` output flag for `triage list`
 
 **Current behavior:** The PR adds a `--json` flag that serializes the issue list to JSON. The happy path works and the diff matches the project's command structure. Two gaps remain: errors are still printed as human text (not JSON), and the new flag has no test coverage.
 

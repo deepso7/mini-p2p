@@ -52,7 +52,11 @@ let mut node = Endpoint::builder()
 
 `/udp/.../quic-v1` goes over QUIC; `/tcp` goes over TCP. Above that, swarm and app-protocol APIs look the same.
 
-:::warning An address containing `/ip4/0.0.0.0` or `/ip6/::` describes where the socket is bound, not an address another machine can dial. Advertise a real interface, public, or relay circuit address to remote peers. :::
+<Callout type="warning">
+
+An address containing `/ip4/0.0.0.0` or `/ip6/::` describes where the socket is bound, not an address another machine can dial. Advertise a real interface, public, or relay circuit address to remote peers.
+
+</Callout>
 
 ## Dial a known peer
 

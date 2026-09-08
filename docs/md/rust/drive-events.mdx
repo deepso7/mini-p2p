@@ -67,7 +67,11 @@ minip2p::Error::EventBacklogExceeded { limit: RUN_UNTIL_SKIP_LIMIT }
 
 Drain ordinary application events with `next_event` or `poll`, handle the high-volume source, and then retry the focused wait.
 
-:::tip Avoid calling `Deadline::NEVER` on a narrow predicate while ignoring a busy stream. Either consume those stream events in the main loop or use a finite deadline and alternate consumers. :::
+<Callout type="tip">
+
+Avoid calling `Deadline::NEVER` on a narrow predicate while ignoring a busy stream. Either consume those stream events in the main loop or use a finite deadline and alternate consumers.
+
+</Callout>
 
 ## Stream and connection shutdown
 

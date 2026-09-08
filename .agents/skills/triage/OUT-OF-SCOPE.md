@@ -42,15 +42,13 @@ interface ThemeConfig {
   fonts: FontStack;
 }
 ```
-````
 
 ## Prior requests
 
 - #42: "Add dark mode support"
 - #87: "Night theme for accessibility"
 - #134: "Dark theme option"
-
-```
+````
 
 ### Naming the file
 
@@ -82,7 +80,7 @@ The maintainer may:
 
 ## When to write to `.out-of-scope/`
 
-Only when an **enhancement** (not a bug) is *rejected* as `wontfix`. This applies to enhancement PRs exactly as it does to issues: a rejected PR is recorded here so the same request doesn't return as fresh code.
+Only when an **enhancement** (not a bug) is _rejected_ as `wontfix`. This applies to enhancement PRs exactly as it does to issues: a rejected PR is recorded here so the same request doesn't return as fresh code.
 
 Do **not** write here when something is closed as `wontfix` because it's **already implemented**. That's a built feature, not a rejected one; recording it would poison the dedup checks with false rejections. Instead, the closing comment points to where the feature already lives.
 
@@ -102,4 +100,3 @@ If the maintainer changes their mind about a previously rejected concept:
 - Delete the `.out-of-scope/` file
 - The skill does not need to reopen old issues; they're historical records
 - The new issue that triggered the reconsideration proceeds through normal triage
-```

@@ -108,8 +108,16 @@ let node = Endpoint::builder()
 
 `BeaconConfig` controls the pubsub topic, cadence, and local announcement cap. `PeerDiscoveryConfig` is shared by signed discovery and mDNS; it controls peer and address bounds, source TTLs, automatic dialing, tie breaking, retry backoff, and mDNS dial-rate limits. Invalid bounds are rejected before a socket is allocated.
 
-:::warning Discovery beacons are always required to be signed. Unsigned discovery beacons are rejected even when application pubsub was configured with `allow_unsigned: true`. :::
+<Callout type="warning">
 
-:::note minip2p owns the discovery topic. Manually subscribing is redundant, and its pubsub messages are consumed before reaching application pubsub events. Calling `unsubscribe` for that topic returns `PubsubError::DiscoveryTopicReserved`. :::
+Discovery beacons are always required to be signed. Unsigned discovery beacons are rejected even when application pubsub was configured with `allow_unsigned: true`.
+
+</Callout>
+
+<Callout type="note">
+
+minip2p owns the discovery topic. Manually subscribing is redundant, and its pubsub messages are consumed before reaching application pubsub events. Calling `unsubscribe` for that topic returns `PubsubError::DiscoveryTopicReserved`.
+
+</Callout>
 
 For a complete mesh demonstration, use the existing [`minip2p-chat` example](https://github.com/deepso7/minip2p/tree/main/examples/chat). It combines discovery, gossipsub, relay circuits, and direct upgrades.

@@ -6,6 +6,7 @@
 __pycache__/
 /tmp
 /bindings/ts/node/*.node
+/bindings/ts/node/artifacts/
 /bindings/ts/node-platforms/*/*.node
 /crates/nodejs/*.node
 

@@ -21,7 +21,11 @@ flowchart TB
   B <-->|"QUIC over UDP · Noise + Yamux over TCP"| C["Network"]
 ```
 
-:::note Protocol and orchestration logic underneath `Endpoint` is Sans-I/O. The library supplies sockets and clocks so application code can stay small, while custom runtimes can use the deterministic lower layers directly. :::
+<Callout type="note">
+
+Protocol and orchestration logic underneath `Endpoint` is Sans-I/O. The library supplies sockets and clocks so application code can stay small, while custom runtimes can use the deterministic lower layers directly.
+
+</Callout>
 
 ## PeerId
 
@@ -70,7 +74,11 @@ With the `nat` capability enabled, `connect*` can race direct candidates against
 
 A relayed path can later emit `NatEvent::PathUpgraded` when hole punching lands.
 
-:::warning A Cargo feature makes a capability available. Enable it on `EndpointBuilder`; see [Install](/rust/install#add-an-optional-capability). :::
+<Callout type="warning">
+
+A Cargo feature makes a capability available. Enable it on `EndpointBuilder`; see [Install](/rust/install#add-an-optional-capability).
+
+</Callout>
 
 ## Where events go
 

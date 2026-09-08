@@ -57,7 +57,11 @@ Catch-all events are a discriminated union with a `type` field. Inbound streams 
 
 Handler exceptions are isolated from event delivery and from other handlers. The endpoint emits `handlerError` afterward with safe metadata and the thrown value.
 
-:::warning Events cross a bounded FIFO queue. If `queueOverflow` is emitted, some event history was lost. Refresh queryable state such as `connectedPeers()`, `knownPeers()`, `path(peerId)`, `reachability()`, and `activeReservation()`. :::
+<Callout type="warning">
+
+Events cross a bounded FIFO queue. If `queueOverflow` is emitted, some event history was lost. Refresh queryable state such as `connectedPeers()`, `knownPeers()`, `path(peerId)`, `reachability()`, and `activeReservation()`.
+
+</Callout>
 
 ## Pubsub
 
@@ -187,6 +191,10 @@ console.log(endpoint.circuitAddress);
 
 Watch `relayReserved`, `relayReservationLost`, `pathEstablished`, `pathUpgraded`, `holePunchFailed`, `fellBackToRelay`, and `connectFailed` for diagnostics and UI state. Keep using ordinary peer and stream APIs when a path upgrades. The peer identity does not change.
 
-:::note Discovery can connect peers directly from advertised addresses without a relay. A relay is still required for relayed connectivity and relay-assisted hole punching. :::
+<Callout type="note">
+
+Discovery can connect peers directly from advertised addresses without a relay. A relay is still required for relayed connectivity and relay-assisted hole punching.
+
+</Callout>
 
 See the [TypeScript API reference](/reference/typescript-api) for the full configuration and event-family map.
