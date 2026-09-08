@@ -16,5 +16,5 @@ tmp
 core
 core.*
 bindings/ts/node/*.node
-bindings/ts/node/npm/*/*.node
+bindings/ts/node-platforms/*/*.node
 crates/nodejs/*.node

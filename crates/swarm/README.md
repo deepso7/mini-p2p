@@ -17,27 +17,15 @@ Orchestration layer that composes minip2p's protocol state machines into a singl
       .protocol("/myapp/1.0.0")
       .build(transport)?;
   ```
-  Built-in ids (`/ipfs/id/1.0.0`, `/ipfs/ping/1.0.0` -- see
-  `RESERVED_PROTOCOL_IDS`) belong to the swarm's own handlers; registering one
-  via `protocol(...)` makes `build` fail with `SwarmError::ReservedProtocol`.
+  Built-in ids (`/ipfs/id/1.0.0`, `/ipfs/ping/1.0.0` -- see `RESERVED_PROTOCOL_IDS`) belong to the swarm's own handlers; registering one via `protocol(...)` makes `build` fail with `SwarmError::ReservedProtocol`.
 - Auto-opens identify on every new connection and surfaces `SwarmEvent::IdentifyReceived`.
 - Emits `SwarmEvent::PeerReady` once the peer id is stable and the first Identify message has been processed.
 - `swarm.ping(peer_id)` opens / reuses a ping stream with no manual protocol negotiation.
 - `swarm.listen_on_bound_addrs()` starts listening on every bound transport address and returns the local `PeerAddr`s. `listen_on_bound_addr()` remains as a first-address convenience for single-socket transports.
 - `swarm.connected_peers()`, `swarm.peer_info(&peer_id)`, and `swarm.is_peer_ready(&peer_id)` expose read-only peer state. `SwarmCore::has_tracked_connections()` is also true for inbound handshakes that have not yet emitted `ConnectionEstablished`.
-- Every public `Swarm` method returns `DriverError`, keeping transport
-  failures, Sans-I/O state rejections, and driver-invariant violations
-  distinguishable; asynchronous action failures are emitted as
-  `SwarmEvent::Error`.
-- Waits (`poll_next`, `run_until`) accept `impl Into<Deadline>`: an `Instant`
-  (absolute), a `Duration` (relative), or `Deadline::NEVER` to block until an
-  event arrives -- no far-future sentinel timestamps needed.
-- `run_until` preserves non-matching events in order, so convenience waits do
-  not steal unrelated application events. Once the deadline expires it still
-  scans everything already synchronously available (buffered events plus one
-  final transport poll), so a buffered match is found regardless of position.
-  Use a consuming `poll_next` loop instead when handling has side effects
-  (logging, dispatch).
+- Every public `Swarm` method returns `DriverError`, keeping transport failures, Sans-I/O state rejections, and driver-invariant violations distinguishable; asynchronous action failures are emitted as `SwarmEvent::Error`.
+- Waits (`poll_next`, `run_until`) accept `impl Into<Deadline>`: an `Instant` (absolute), a `Duration` (relative), or `Deadline::NEVER` to block until an event arrives -- no far-future sentinel timestamps needed.
+- `run_until` preserves non-matching events in order, so convenience waits do not steal unrelated application events. Once the deadline expires it still scans everything already synchronously available (buffered events plus one final transport poll), so a buffered match is found regardless of position. Use a consuming `poll_next` loop instead when handling has side effects (logging, dispatch).
 - Generic user-protocol hook for anything else (relay, DCUtR, custom app protocols):
   ```rust
   swarm.add_protocol("/myapp/1.0.0")?;
@@ -45,15 +33,8 @@ Orchestration layer that composes minip2p's protocol state machines into a singl
   swarm.send_stream(&peer_id, stream_id, data)?;
   // receive via SwarmEvent::StreamData { ... }
   ```
-- Application registration grants independent inbound, outbound, and
-  Identify-advertised roles. Composed services can register only the roles they
-  own. Incoming negotiations snapshot inbound membership at stream arrival;
-  outbound opens consult only outbound membership, and future Identify
-  responses snapshot only advertised membership.
-- Connection lifecycle events: `ConnectionEstablished`, and
-  `ConnectionClosed` with `Transport` or `Superseded` cause. Exact remote
-  transport addresses remain queryable by `ConnectionId`, so policy never
-  accidentally inspects a last-wins replacement connection.
+- Application registration grants independent inbound, outbound, and Identify-advertised roles. Composed services can register only the roles they own. Incoming negotiations snapshot inbound membership at stream arrival; outbound opens consult only outbound membership, and future Identify responses snapshot only advertised membership.
+- Connection lifecycle events: `ConnectionEstablished`, and `ConnectionClosed` with `Transport` or `Superseded` cause. Exact remote transport addresses remain queryable by `ConnectionId`, so policy never accidentally inspects a last-wins replacement connection.
 - Identify lifecycle: `IdentifyReceived { peer_id, info }` with observed-addr populated from the transport endpoint.
 - Ping lifecycle: `PingRttMeasured`, `PingTimeout`.
 - User-stream lifecycle: `StreamReady`, `StreamData`, `StreamRemoteWriteClosed`, `StreamClosed`.
@@ -89,10 +70,8 @@ The core is deterministic when callers use a simple mutate-then-drain loop:
 3. Execute each `SwarmOutput::Action` against your transport.
 4. Feed driver results back with `SwarmInput::StreamOpened`, `SwarmInput::OpenStreamFailed`, or `SwarmInput::RuntimeError`. If executing a `SwarmAction::ResetStream` fails, also call `core.reset_stream_failed(conn_id, stream_id)` so a later reset can be retried.
 
-`SwarmRuntimeError` carries `peer_id`, `conn_id`, and `stream_id` whenever the
-corresponding identity is known. In particular, asynchronous outbound
-multistream and unsupported-protocol failures retain the stream id needed by
-hosts to correlate an open request.
+   `SwarmRuntimeError` carries `peer_id`, `conn_id`, and `stream_id` whenever the corresponding identity is known. In particular, asynchronous outbound multistream and unsupported-protocol failures retain the stream id needed by hosts to correlate an open request.
+
 5. Hand each `SwarmOutput::Event` to the application.
 6. Before waiting on I/O again, `core.is_idle()` should be true.
 
@@ -100,9 +79,7 @@ That shape mirrors the std `Swarm<T>` driver while keeping sockets, clocks, slee
 
 ## Std driver usage
 
-See `transports/quic/tests/swarm_e2e.rs` and
-`transports/tcp/tests/upgrade.rs` for end-to-end examples over QUIC and TCP
-(auth, muxing, Identify, and app streams).
+See `transports/quic/tests/swarm_e2e.rs` and `transports/tcp/tests/upgrade.rs` for end-to-end examples over QUIC and TCP (auth, muxing, Identify, and app streams).
 
 ## no_std
 
@@ -113,10 +90,7 @@ Disable default features:
 minip2p-swarm = { path = "crates/swarm", default-features = false }
 ```
 
-The `no_std` build omits only the blocking `Swarm<T>` wrapper. `SwarmBuilder`
-remains available: call `build_runtime(transport, entropy)` to construct a
-portable `SwarmRuntime`. `SwarmCore`, the event / action / error types, and the
-full caller-driven runtime all remain available without `std`.
+The `no_std` build omits only the blocking `Swarm<T>` wrapper. `SwarmBuilder` remains available: call `build_runtime(transport, entropy)` to construct a portable `SwarmRuntime`. `SwarmCore`, the event / action / error types, and the full caller-driven runtime all remain available without `std`.
 
 ## Scope
 

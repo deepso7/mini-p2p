@@ -8,8 +8,7 @@ Shared constraints for every specialist:
 - **Read-only**: read files, search, `git show`/`git diff`. No `cargo`/`just` — the orchestrator owns test runs (the Verify charter carries the single exception)
 - No GitHub review threads
 - No style nits; failure story required
-- Return a JSON array of findings (may be empty), each shaped:
-  `{"reasoning":"…","severity":"P0|P1|P2|P3","confidence":0.0-1.0,"path":"file","line":123,"finding":"what breaks + who is hurt. fix hint."}`
+- Return a JSON array of findings (may be empty), each shaped: `{"reasoning":"…","severity":"P0|P1|P2|P3","confidence":0.0-1.0,"path":"file","line":123,"finding":"what breaks + who is hurt. fix hint."}`
 - `reasoning` is your scratchpad and is never shown to the user — put the user-facing story in `finding`
 - `line` must be read off the post-change file with a file-read tool, **not** counted from diff hunk headers; a wrong line makes the finding unactionable
 - Severity bar:

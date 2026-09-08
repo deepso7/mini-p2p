@@ -15,11 +15,7 @@ workspace = true
 
 [features]
 default = ["std"]
-std = [
-    "minip2p-core/std",
-    "minip2p-platform/std",
-    "thiserror/std",
-]
+std = ["minip2p-core/std", "minip2p-platform/std", "thiserror/std"]
 
 [dependencies]
 minip2p-core = { path = "../core", version = "0.5.3", default-features = false }

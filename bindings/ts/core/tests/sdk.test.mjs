@@ -30,6 +30,11 @@ class TestMinip2p extends Minip2pBase {
   }
 }
 
+async function tick() {
+  await Promise.resolve();
+  await Promise.resolve();
+}
+
 test("named and catch-all subscribers receive flattened events", async () => {
   const backend = new MockBackend();
   const endpoint = new TestMinip2p(backend);
@@ -118,6 +123,13 @@ test("events iteration ends immediately for a pre-aborted signal", async () => {
   assert.equal((await iterator.next()).done, true);
   endpoint.close();
 });
+
+function peerReady(peerId) {
+  return {
+    inner: { peerId, protocols: ["/test/1"] },
+    tag: P2pEvent_Tags.PeerReady,
+  };
+}
 
 test("events iteration drops oldest buffered events and reports the drop", async () => {
   const backend = new MockBackend();
@@ -211,6 +223,20 @@ test("inbound relayed path events preserve relay provenance", async () => {
   ]);
   endpoint.close();
 });
+
+function streamReady(overrides = {}) {
+  return {
+    inner: {
+      connId: 2,
+      initiatedLocally: false,
+      peerId: "peer",
+      protocolId: "/test/1",
+      streamId: 3,
+      ...overrides,
+    },
+    tag: P2pEvent_Tags.StreamReady,
+  };
+}
 
 test("catch-all stream events expose metadata, while named handlers get handles", async () => {
   const backend = new MockBackend();
@@ -462,6 +488,18 @@ test("teardown releases queued native events", () => {
 
   assert.deepEqual(handled, [queued]);
 });
+
+function streamData(data, streamId) {
+  return {
+    inner: {
+      connId: 2,
+      data: data.buffer,
+      peerId: "peer",
+      streamId,
+    },
+    tag: P2pEvent_Tags.StreamData,
+  };
+}
 
 test("stream FIFO counts only queued data and cleans up after terminal", async () => {
   const backend = new MockBackend();
@@ -764,6 +802,16 @@ test("abandon tolerates a native close before its event is dispatched", async ()
   assert.throws(() => stream.write("closed"), ClosedError);
   endpoint.close();
 });
+
+async function remainsPending(promise) {
+  return Promise.race([
+    promise.then(
+      () => false,
+      () => false
+    ),
+    tick().then(() => true),
+  ]);
+}
 
 test("openStream correlates full available identity and abandons late ready", async () => {
   const backend = new MockBackend();
@@ -1076,51 +1124,3 @@ test("driver failure rejects work and reports a distinct close reason", async ()
   assert.equal(reason.reason, "driverFailed");
   assert.ok(reason.error instanceof DriverFailedError);
 });
-
-function streamReady(overrides = {}) {
-  return {
-    inner: {
-      connId: 2,
-      initiatedLocally: false,
-      peerId: "peer",
-      protocolId: "/test/1",
-      streamId: 3,
-      ...overrides,
-    },
-    tag: P2pEvent_Tags.StreamReady,
-  };
-}
-
-function peerReady(peerId) {
-  return {
-    inner: { peerId, protocols: ["/test/1"] },
-    tag: P2pEvent_Tags.PeerReady,
-  };
-}
-
-function streamData(data, streamId) {
-  return {
-    inner: {
-      connId: 2,
-      data: data.buffer,
-      peerId: "peer",
-      streamId,
-    },
-    tag: P2pEvent_Tags.StreamData,
-  };
-}
-
-async function tick() {
-  await Promise.resolve();
-  await Promise.resolve();
-}
-
-async function remainsPending(promise) {
-  return Promise.race([
-    promise.then(
-      () => false,
-      () => false
-    ),
-    tick().then(() => true),
-  ]);
-}

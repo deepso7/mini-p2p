@@ -3,8 +3,7 @@ title: TypeScript API
 description: Concise reference for the high-level TypeScript configuration, endpoint methods, streams, events, and public errors on Node.js and React Native.
 ---
 
-The TypeScript SDK has one interface on two runtimes. Install `@minip2p/node`
-or `@minip2p/react-native` and import application APIs from that package.
+The TypeScript SDK has one interface on two runtimes. Install `@minip2p/node` or `@minip2p/react-native` and import application APIs from that package.
 
 Choose the import for the application's runtime:
 
@@ -43,8 +42,7 @@ Choose the import for the application's runtime:
   </Tab>
 </Tabs>
 
-Setup per runtime: [Node.js](/typescript/setup-node),
-[React Native](/typescript/setup-react-native).
+Setup per runtime: [Node.js](/typescript/setup-node), [React Native](/typescript/setup-react-native).
 
 ## Configuration
 
@@ -64,18 +62,9 @@ Setup per runtime: [Node.js](/typescript/setup-node),
 | `discovery` | `Minip2pDiscoveryOptions` | Signed-beacon topic, timing, and auto-dial policy. |
 | `mdns` | `boolean \| Minip2pMdnsOptions` | Enable local-link discovery with defaults or explicit options. |
 
-`discovery.topic` is required when signed discovery is enabled. Both discovery
-options objects accept `autoDial`; remaining timing and capacity fields are
-typed in the exported declarations and use defaults when omitted. Signed
-discovery and mDNS share one automatic-dial policy. If both set `autoDial`, the
-values must match.
+`discovery.topic` is required when signed discovery is enabled. Both discovery options objects accept `autoDial`; remaining timing and capacity fields are typed in the exported declarations and use defaults when omitted. Signed discovery and mDNS share one automatic-dial policy. If both set `autoDial`, the values must match.
 
-Each transport accepts `true` or
-`{ listen?: readonly [string, ...string[]] }`; omit a
-transport to disable it. `true` listens on that transport's IPv4 and IPv6
-defaults. An explicit `listen` array replaces those defaults exactly; an empty
-array is rejected. QUIC accepts at most one explicit listener per IP family.
-An omitted or empty `transports` object defaults to QUIC.
+Each transport accepts `true` or `{ listen?: readonly [string, ...string[]] }`; omit a transport to disable it. `true` listens on that transport's IPv4 and IPv6 defaults. An explicit `listen` array replaces those defaults exactly; an empty array is rejected. QUIC accepts at most one explicit listener per IP family. An omitted or empty `transports` object defaults to QUIC.
 
 ```ts
 // QUIC only, IPv4 + IPv6 (also the default when `transports` is omitted)
@@ -116,24 +105,23 @@ and shutdown order.
 
 ## State queries
 
-| API | Result |
-| --- | --- |
-| `peerId()` | Local peer ID. |
-| `listenAddrs()` | Currently bound peer multiaddresses. |
-| `connectedPeers()` | Peer IDs with live transport connections. |
-| `isPeerReady(peerId)` | Whether Identify completed. |
-| `peerInfo(peerId)` | Latest remote Identify snapshot, if known. |
-| `knownPeers()` | Multi-source discovery address book. |
-| `discoveryNowMs()` | Discovery monotonic time, when enabled. |
-| `path(peerId)` | Authoritative current `Path`, if connected. |
-| `reachability()` | Latest AutoNAT reachability verdict. |
-| `activeReservation()` | Active relay reservation metadata. |
-| `circuitAddress` | Usable local circuit address, when reserved. |
+| API                   | Result                                       |
+| --------------------- | -------------------------------------------- |
+| `peerId()`            | Local peer ID.                               |
+| `listenAddrs()`       | Currently bound peer multiaddresses.         |
+| `connectedPeers()`    | Peer IDs with live transport connections.    |
+| `isPeerReady(peerId)` | Whether Identify completed.                  |
+| `peerInfo(peerId)`    | Latest remote Identify snapshot, if known.   |
+| `knownPeers()`        | Multi-source discovery address book.         |
+| `discoveryNowMs()`    | Discovery monotonic time, when enabled.      |
+| `path(peerId)`        | Authoritative current `Path`, if connected.  |
+| `reachability()`      | Latest AutoNAT reachability verdict.         |
+| `activeReservation()` | Active relay reservation metadata.           |
+| `circuitAddress`      | Usable local circuit address, when reserved. |
 
 ## Operations
 
-Promise operations use `{ timeoutMs?, signal? }`. Their default timeout is 65
-seconds; `timeoutMs: 0` disables it.
+Promise operations use `{ timeoutMs?, signal? }`. Their default timeout is 65 seconds; `timeoutMs: 0` disables it.
 
 | API | Result |
 | --- | --- |
@@ -176,13 +164,9 @@ Stream events are `data`, `remoteWriteClosed`, `closed`, and `dataOverflow`.
 
 ## Events
 
-`on(name, handler)` is the typed application path. `once` and `waitFor` expose
-the same named map as Promises. `on(handler)` receives catch-all metadata with a
-discriminating `type`.
+`on(name, handler)` is the typed application path. `once` and `waitFor` expose the same named map as Promises. `on(handler)` receives catch-all metadata with a discriminating `type`.
 
-`events({ signal?, bufferCap? })` returns an async iterator over the catch-all
-event stream. It ends when the endpoint closes or the signal aborts. A slow
-iterator yields `queueOverflow` before continuing with retained events.
+`events({ signal?, bufferCap? })` returns an async iterator over the catch-all event stream. It ends when the endpoint closes or the signal aborts. A slow iterator yields `queueOverflow` before continuing with retained events.
 
 | Family | Named events |
 | --- | --- |
@@ -193,8 +177,7 @@ iterator yields `queueOverflow` before continuing with retained events.
 | Pubsub | `message`, `peerSubscribed`, `peerUnsubscribed`, `pubsubOutboundFailure`, `pubsubProtocolViolation` |
 | Discovery | `peerDiscovered`, `peerUpdated`, `peerExpired`, `discoveryDialFailed`, `discoveryProtocolViolation` |
 
-The catch-all stream uses `inboundStream` metadata instead of the live `stream`
-handle. Subscribe to the named `stream` event to claim an inbound stream.
+The catch-all stream uses `inboundStream` metadata instead of the live `stream` handle. Subscribe to the named `stream` event to claim an inbound stream.
 
 ## Public errors
 

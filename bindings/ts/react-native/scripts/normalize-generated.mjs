@@ -1,4 +1,4 @@
-/* oxlint-disable func-style -- The recursive normalizer is hoisted below the generated-path manifest. */
+/* oxlint-disable func-style -- Use named function declarations for script helpers. */
 
 import {
   existsSync,
@@ -31,13 +31,6 @@ const generatedPaths = [
   "src/native.tsx",
 ];
 
-ensureAndroidMdnsPermissions();
-customizeTurboModuleForMdns();
-
-for (const relativePath of generatedPaths) {
-  normalizePath(path.join(packageRoot, relativePath));
-}
-
 function ensureAndroidMdnsPermissions() {
   const manifest = path.join(
     packageRoot,
@@ -59,6 +52,19 @@ function ensureAndroidMdnsPermissions() {
 </manifest>`
     )
   );
+}
+
+ensureAndroidMdnsPermissions();
+function replaceOnce(relativePath, needle, replacement) {
+  const target = path.join(packageRoot, relativePath);
+  if (!existsSync(target)) {
+    return;
+  }
+  const source = readFileSync(target, "utf-8");
+  if (source.includes(replacement) || !source.includes(needle)) {
+    return;
+  }
+  writeFileSync(target, source.replace(needle, replacement));
 }
 
 function customizeTurboModuleForMdns() {
@@ -139,17 +145,7 @@ import android.net.wifi.WifiManager
   );
 }
 
-function replaceOnce(relativePath, needle, replacement) {
-  const target = path.join(packageRoot, relativePath);
-  if (!existsSync(target)) {
-    return;
-  }
-  const source = readFileSync(target, "utf-8");
-  if (source.includes(replacement) || !source.includes(needle)) {
-    return;
-  }
-  writeFileSync(target, source.replace(needle, replacement));
-}
+customizeTurboModuleForMdns();
 
 function normalizePath(target) {
   if (!existsSync(target)) {
@@ -167,4 +163,8 @@ function normalizePath(target) {
   if (normalized !== source) {
     writeFileSync(target, normalized);
   }
+}
+
+for (const relativePath of generatedPaths) {
+  normalizePath(path.join(packageRoot, relativePath));
 }

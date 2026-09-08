@@ -24,12 +24,7 @@ just check-nostd   # all no_std crates on thumbv7em-none-eabi
 just fuzz 30       # needs nightly + cargo-fuzz
 ```
 
-Single test: `cargo test -p minip2p-ping test_name` (plain `cargo test` is fine
-for one test; the full matrix uses nextest because it runs every binary's tests
-at once instead of one binary at a time). Endpoint features:
-`cargo test -p minip2p-rs --features tcp` (or `mdns`, `discovery`,
-`discovery,mdns,tcp`; see `justfile` for the full matrix). `fuzz/` is outside the
-workspace — use `--manifest-path fuzz/Cargo.toml`.
+Single test: `cargo test -p minip2p-ping test_name` (plain `cargo test` is fine for one test; the full matrix uses nextest because it runs every binary's tests at once instead of one binary at a time). Endpoint features: `cargo test -p minip2p-rs --features tcp` (or `mdns`, `discovery`, `discovery,mdns,tcp`; see `justfile` for the full matrix). `fuzz/` is outside the workspace — use `--manifest-path fuzz/Cargo.toml`.
 
 Publish a release end to end with:
 
@@ -37,12 +32,7 @@ Publish a release end to end with:
 just release <version>
 ```
 
-The command bumps every public package and local dependency, regenerates
-lockfiles, waits for push CI, publishes the GitHub release, waits for the native
-build and registry workflow, and verifies crates.io and npm. The default path
-leaves the full matrix to GitHub to avoid running it twice; use
-`just release <version> --full-local` to run it locally before pushing as well.
-
+The command bumps every public package and local dependency, regenerates lockfiles, waits for push CI, publishes the GitHub release, waits for the native build and registry workflow, and verifies crates.io and npm. The default path leaves the full matrix to GitHub to avoid running it twice; use `just release <version> --full-local` to run it locally before pushing as well.
 
 ## Architecture
 

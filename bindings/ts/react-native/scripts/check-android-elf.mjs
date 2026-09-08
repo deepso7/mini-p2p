@@ -1,4 +1,4 @@
-/* oxlint-disable func-style -- The script keeps its hoisted command runner below the checks. */
+/* oxlint-disable func-style -- Use named function declarations for script helpers. */
 
 import { execFileSync } from "node:child_process";
 import path from "node:path";
@@ -41,6 +41,13 @@ const libraries = [
     "libminip2p_ffi.so"
   ),
 }));
+
+function run(command, args) {
+  return execFileSync(command, args, {
+    encoding: "utf-8",
+    maxBuffer: 16 * 1024 * 1024,
+  });
+}
 
 for (const library of libraries) {
   const fileHeader = run(readelf, ["-hW", library.path]);
@@ -87,11 +94,4 @@ for (const library of libraries) {
   console.log(
     `${library.abi}: LOAD=${[...new Set(alignments)].join(",")} allocator-hooks=${symbols.length === 0 ? "optimized-away" : "LOCAL"}`
   );
-}
-
-function run(command, args) {
-  return execFileSync(command, args, {
-    encoding: "utf-8",
-    maxBuffer: 16 * 1024 * 1024,
-  });
 }

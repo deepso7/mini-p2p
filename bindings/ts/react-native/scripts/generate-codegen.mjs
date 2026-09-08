@@ -1,4 +1,4 @@
-/* oxlint-disable func-style -- The generator keeps its process runner below the generation steps. */
+/* oxlint-disable func-style -- Use named function declarations for script helpers. */
 
 import { spawnSync } from "node:child_process";
 import {
@@ -12,7 +12,7 @@ import path from "node:path";
 import process from "node:process";
 
 const packageRoot = path.resolve(import.meta.dirname, "..");
-const workspaceRoot = path.resolve(packageRoot, "..");
+const workspaceRoot = path.resolve(packageRoot, "../../..");
 const cli = path.join(
   workspaceRoot,
   "node_modules",
@@ -21,6 +21,19 @@ const cli = path.join(
   "build",
   "bin.js"
 );
+
+function run(command, args, cwd) {
+  const result = spawnSync(command, args, {
+    cwd,
+    stdio: "inherit",
+  });
+  if (result.error !== undefined) {
+    throw result.error;
+  }
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
+}
 
 run(process.execPath, [cli, "codegen", "--source", "library"], packageRoot);
 
@@ -44,16 +57,3 @@ rmSync(path.join(generatedJavaRoot, "com/facebook"), {
   force: true,
   recursive: true,
 });
-
-function run(command, args, cwd) {
-  const result = spawnSync(command, args, {
-    cwd,
-    stdio: "inherit",
-  });
-  if (result.error !== undefined) {
-    throw result.error;
-  }
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1);
-  }
-}

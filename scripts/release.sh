@@ -139,12 +139,12 @@ else
     bindings/ts/core/package.json \
     bindings/ts/react-native/package.json \
     bindings/ts/node/package.json \
-    bindings/ts/node/npm/*/package.json
+    bindings/ts/node-platforms/*/package.json
 
   echo "release: regenerating lockfiles"
   cargo metadata --format-version 1 >/dev/null
   cargo metadata --manifest-path fuzz/Cargo.toml --format-version 1 >/dev/null
-  pnpm --dir bindings/ts install --lockfile-only --ignore-scripts
+  pnpm install --lockfile-only --ignore-scripts
 
   echo "release: validating release metadata"
   metadata="$(cargo metadata --no-deps --format-version 1)"
@@ -185,7 +185,7 @@ $mismatched_dependencies"
     die "@minip2p/react-native version does not match"
   [[ "$(jq -r .version bindings/ts/node/package.json)" == "$version" ]] ||
     die "@minip2p/node version does not match"
-  for manifest in bindings/ts/node/npm/*/package.json; do
+  for manifest in bindings/ts/node-platforms/*/package.json; do
     [[ "$(jq -r .version "$manifest")" == "$version" ]] ||
       die "$(jq -r .name "$manifest") version does not match"
   done
@@ -375,7 +375,7 @@ done
 verify_npm_package '%40minip2p%2Fcore' '@minip2p/core'
 verify_npm_package '%40minip2p%2Freact-native' '@minip2p/react-native'
 verify_npm_package '%40minip2p%2Fnode' '@minip2p/node'
-for manifest in bindings/ts/node/npm/*/package.json; do
+for manifest in bindings/ts/node-platforms/*/package.json; do
   package_name="$(jq -r .name "$manifest")"
   encoded_name="${package_name/@/%40}"
   encoded_name="${encoded_name/\//%2F}"

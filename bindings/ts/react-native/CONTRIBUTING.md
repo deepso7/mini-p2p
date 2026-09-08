@@ -1,10 +1,10 @@
 # Contributing
 
-This package is part of the `bindings/ts` pnpm workspace and includes an Expo SDK 57 development-build example.
+This package is part of the root pnpm workspace with an Expo SDK 57 development-build example in [`examples/react-native`](../../../examples/react-native).
 
 ## Setup
 
-Use the Node.js version in `bindings/ts/.nvmrc`, then install from the TypeScript workspace root:
+Use the Node.js version in `.nvmrc`, then install from the repository root:
 
 ```sh
 corepack enable

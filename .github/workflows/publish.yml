@@ -20,7 +20,7 @@ concurrency:
 env:
   CARGO_TERM_COLOR: always
   NODE_VERSION: "24.20.0"
-  PNPM_VERSION: "11.25.0"
+  PNPM_VERSION: "12.3.4"
 
 jobs:
   verify-release:
@@ -101,7 +101,7 @@ jobs:
             exit 1
           fi
           platform_errors="$({
-            for manifest in bindings/ts/node/npm/*/package.json; do
+            for manifest in bindings/ts/node-platforms/*/package.json; do
               jq -r --arg version "$version" '
                 select(.version != $version or .publishConfig.access != "public")
                 | "\(.name) is not public at \($version)"
@@ -193,7 +193,7 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
         with:
           save-if: false
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm --workspace-root install --frozen-lockfile
       - name: Build addon
         shell: bash
         run: pnpm --filter @minip2p/node native:build:target --target ${{ matrix.target }} -- --locked
@@ -396,19 +396,19 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           save-if: false
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm rn:android
+      - run: pnpm --workspace-root install --frozen-lockfile
+      - run: pnpm --workspace-root rn:android
       - name: Validate Android ELF alignment and allocator hooks
         run: node react-native/scripts/check-android-elf.mjs
-      - run: pnpm example prebuild
+      - run: pnpm --workspace-root example prebuild
       - name: Build both Android ABIs
-        working-directory: bindings/ts/react-native/example/android
+        working-directory: examples/react-native/android
         run: ./gradlew :app:assembleDebug -PreactNativeArchitectures=arm64-v8a,x86_64
       - name: Validate 16 KiB APK zip alignment
         run: |
           "$ANDROID_HOME/build-tools/36.0.0/zipalign" \
             -c -P 16 -v 4 \
-            react-native/example/android/app/build/outputs/apk/debug/app-debug.apk
+            ../../examples/react-native/android/app/build/outputs/apk/debug/app-debug.apk
       - name: Enforce native size budget
         run: node react-native/scripts/check-native-size.mjs android
         env:
@@ -451,8 +451,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           save-if: false
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm rn:ios
+      - run: pnpm --workspace-root install --frozen-lockfile
+      - run: pnpm --workspace-root rn:ios
       - name: Validate XCFramework slices
         run: |
           lipo -info react-native/build/Minip2pFfi.xcframework/ios-arm64/libminip2p_ffi.a
@@ -502,20 +502,20 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
         with:
           save-if: false
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm --workspace-root install --frozen-lockfile
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           pattern: node-binding-*
           path: bindings/ts/node/artifacts
           merge-multiple: true
       - name: Assemble Node platform packages
-        run: pnpm --filter @minip2p/node exec napi artifacts --output-dir artifacts
-      - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm lint
-      - run: pnpm build
+        run: pnpm --filter @minip2p/node native:artifacts
+      - run: pnpm --workspace-root typecheck
+      - run: pnpm --workspace-root test
+      - run: pnpm --workspace-root lint
+      - run: pnpm --workspace-root build:bindings
       - run: pnpm --filter @minip2p/react-native test:built
-      - run: pnpm rn:generate
+      - run: pnpm --workspace-root rn:generate
       - name: Generated files are current
         run: test -z "$(git status --porcelain -- react-native)"
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -542,7 +542,7 @@ jobs:
             --pack-destination "$PWD/release-packages"
           pnpm --filter @minip2p/node pack \
             --pack-destination "$PWD/release-packages"
-          for platform_dir in node/npm/*; do
+          for platform_dir in node-platforms/*; do
             pnpm --dir "$platform_dir" pack \
               --pack-destination "$PWD/release-packages"
           done
@@ -556,7 +556,7 @@ jobs:
             "release-packages/minip2p-react-native-$RELEASE_VERSION.tgz" \
             react-native \
             "release-packages/minip2p-node-$RELEASE_VERSION.tgz" \
-            node/npm
+            node-platforms
       - name: Smoke-test installation from tarballs
         env:
           RELEASE_VERSION: ${{ needs.verify-release.outputs.version }}
@@ -574,7 +574,7 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: minip2p-node-platform-packages
-          path: bindings/ts/node/npm
+          path: bindings/ts/node-platforms
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -720,15 +720,15 @@ jobs:
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: ${{ env.PNPM_VERSION }}
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm --workspace-root install --frozen-lockfile
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: minip2p-node-platform-packages
-          path: bindings/ts/node/npm
+          path: bindings/ts/node-platforms
       - name: Check verified platform artifacts
-        run: test "$(find node/npm -name 'minip2p.*.node' -type f -size +0c | wc -l)" -eq 7
+        run: test "$(find node-platforms -name 'minip2p.*.node' -type f -size +0c | wc -l)" -eq 7
       - name: Publish platform packages with npm trusted publishing
-        run: pnpm --filter @minip2p/node exec napi prepublish -t npm --no-gh-release
+        run: pnpm --filter @minip2p/node native:prepublish
 
   publish-typescript:
     name: Publish to npm

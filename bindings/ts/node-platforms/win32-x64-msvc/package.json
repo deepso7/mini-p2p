@@ -1,5 +1,5 @@
 {
-  "name": "@minip2p/node-darwin-x64",
+  "name": "@minip2p/node-win32-x64-msvc",
   "version": "0.5.3",
   "description": "Node.js bindings for minip2p",
   "keywords": [
@@ -15,18 +15,18 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/deepso7/minip2p.git",
-    "directory": "bindings/ts/node"
+    "directory": "bindings/ts/node-platforms/win32-x64-msvc"
   },
   "files": [
-    "minip2p.darwin-x64.node"
+    "minip2p.win32-x64-msvc.node"
   ],
   "os": [
-    "darwin"
+    "win32"
   ],
   "cpu": [
     "x64"
   ],
-  "main": "minip2p.darwin-x64.node",
+  "main": "minip2p.win32-x64-msvc.node",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

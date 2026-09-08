@@ -1,19 +1,11 @@
 # minip2p-peer
 
-A NAT-aware echo-ping demo for the full minip2p stack, built entirely on the
-`minip2p` `Endpoint` API (`features = ["nat", "tcp"]`). Two subcommands:
+A NAT-aware echo-ping demo for the full minip2p stack, built entirely on the `minip2p` `Endpoint` API (`features = ["nat", "tcp"]`). Two subcommands:
 
-- **`listen`** — bind QUIC or TCP, echo every inbound ping stream byte for byte.
-  With `--relay`, hold a Circuit Relay v2 reservation and print a
-  paste-ready circuit address.
-- **`dial`** — connect to a target through the NAT traversal agent and ping
-  once per second, tagging every RTT with the path it travelled. When a
-  DCUtR hole punch upgrades the path mid-run, the seq sequence continues
-  unbroken and the RTT visibly drops.
+- **`listen`** — bind QUIC or TCP, echo every inbound ping stream byte for byte. With `--relay`, hold a Circuit Relay v2 reservation and print a paste-ready circuit address.
+- **`dial`** — connect to a target through the NAT traversal agent and ping once per second, tagging every RTT with the path it travelled. When a DCUtR hole punch upgrades the path mid-run, the seq sequence continues unbroken and the RTT visibly drops.
 
-The same two commands work on loopback, across the open internet, and
-between two NATed hosts via a relay — the agent adapts; nothing is
-configured per environment.
+The same two commands work on loopback, across the open internet, and between two NATed hosts via a relay — the agent adapts; nothing is configured per environment.
 
 ```text
 USAGE:
@@ -23,17 +15,10 @@ USAGE:
 
 `<target>` accepts two shapes:
 
-- a **circuit address** copied from the listener's `circuit=` line —
-  `/ip4/…/udp/…/quic-v1/p2p/<relay>/p2p-circuit/p2p/<peer>`. The dialer
-  derives the relay and the target peer from it; nothing else is needed.
-- a **plain peer-addr** — `/ip4/…/udp/…/quic-v1/p2p/<peer-id>` — for a
-  directly reachable peer. `--relay` optionally adds a relay leg to race
-  against the direct dial.
+- a **circuit address** copied from the listener's `circuit=` line — `/ip4/…/udp/…/quic-v1/p2p/<relay>/p2p-circuit/p2p/<peer>`. The dialer derives the relay and the target peer from it; nothing else is needed.
+- a **plain peer-addr** — `/ip4/…/udp/…/quic-v1/p2p/<peer-id>` — for a directly reachable peer. `--relay` optionally adds a relay leg to race against the direct dial.
 
-`--count n` (dial only) stops after `n` pings, prints a summary, and exits
-`0`. Without it the dialer pings until interrupted; a running summary is
-printed every tenth pong as a periodic checkpoint (Ctrl-C itself prints
-nothing further).
+`--count n` (dial only) stops after `n` pings, prints a summary, and exits `0`. Without it the dialer pings until interrupted; a running summary is printed every tenth pong as a periodic checkpoint (Ctrl-C itself prints nothing further).
 
 ## Quickstart: loopback
 
@@ -61,16 +46,13 @@ This is exactly what the CI E2E test (`tests/ping.rs`) runs.
 
 ## The real payoff: two peers behind NATs
 
-You need one publicly reachable Circuit Relay v2 server. The
-[minip2p relay-server example](../relay-server/README.md)
-works:
+You need one publicly reachable Circuit Relay v2 server. The [minip2p relay-server example](../relay-server/README.md) works:
 
 ```console
 $ cargo run -p minip2p-relay-server-example -- --key var/relay.ed25519
 ```
 
-**Peer B (listener), behind its NAT** — reserve a slot and publish the
-circuit address:
+**Peer B (listener), behind its NAT** — reserve a slot and publish the circuit address:
 
 ```console
 $ minip2p-peer listen --relay /ip4/<relay-host>/udp/19876/quic-v1/p2p/<relay-id>
@@ -100,15 +82,11 @@ $ minip2p-peer dial /ip4/<relay-host>/…/p2p-circuit/p2p/12D3KooWB…
 What to look for:
 
 - the first pongs travel `path=relayed` through the relay bridge;
-- `nat-path-upgraded … to=direct-punched` marks the DCUtR hole punch
-  landing, and `channel-switched` shows any in-flight seqs being resent on
-  the new stream — **the seq sequence never breaks**;
+- `nat-path-upgraded … to=direct-punched` marks the DCUtR hole punch landing, and `channel-switched` shows any in-flight seqs being resent on the new stream — **the seq sequence never breaks**;
 - subsequent pongs are `path=direct` with a clearly lower RTT;
 - the summary splits the RTT accounting per path.
 
-If the punch cannot land (e.g. UDP blocked between the peers), you'll see
-`nat-holepunch-failed` for each retry window and finally
-`nat-fell-back-to-relay`; pings simply continue on `path=relayed`.
+If the punch cannot land (e.g. UDP blocked between the peers), you'll see `nat-holepunch-failed` for each retry window and finally `nat-fell-back-to-relay`; pings simply continue on `path=relayed`.
 
 ## Options
 
@@ -122,15 +100,7 @@ If the punch cannot land (e.g. UDP blocked between the peers), you'll see
 
 ## Notes
 
-- The echo protocol (`/minip2p/echo/1`) frames are 16 bytes: an 8-byte
-  big-endian seq followed by an 8-byte send timestamp. The listener never
-  parses them — it echoes raw bytes, which also exercises frame
-  fragmentation/coalescing on the dialer's reassembly path.
-- A relayed path is an end-to-end Noise connection multiplexed with Yamux.
-  Identify, ping, and the echo protocol use the same negotiated stream APIs
-  as a direct connection.
-- Exit paths: `--count` is the graceful shutdown (half-close, 3 s drain,
-  summary); Ctrl-C is the blunt one. The listener runs until interrupted.
-- The previous `direct`/`relay`/`autonat` modes (hand-rolled protocol
-  drivers) live in git history; the machine-level reference for the
-  traversal flows is `crates/nat/tests`.
+- The echo protocol (`/minip2p/echo/1`) frames are 16 bytes: an 8-byte big-endian seq followed by an 8-byte send timestamp. The listener never parses them — it echoes raw bytes, which also exercises frame fragmentation/coalescing on the dialer's reassembly path.
+- A relayed path is an end-to-end Noise connection multiplexed with Yamux. Identify, ping, and the echo protocol use the same negotiated stream APIs as a direct connection.
+- Exit paths: `--count` is the graceful shutdown (half-close, 3 s drain, summary); Ctrl-C is the blunt one. The listener runs until interrupted.
+- The previous `direct`/`relay`/`autonat` modes (hand-rolled protocol drivers) live in git history; the machine-level reference for the traversal flows is `crates/nat/tests`.

@@ -3,10 +3,7 @@ title: Drive events
 description: Choose between poll, next_event, and focused waits without losing unrelated application events.
 ---
 
-minip2p remains caller-driven at every layer. The application chooses when to
-poll, how long to wait, and which event queue to consume. Read
-[where events go](/rust/concepts#where-events-go) first. If you are working
-with custom streams, also read [Register a protocol](/rust/register-a-protocol).
+minip2p remains caller-driven at every layer. The application chooses when to poll, how long to wait, and which event queue to consume. Read [where events go](/rust/concepts#where-events-go) first. If you are working with custom streams, also read [Register a protocol](/rust/register-a-protocol).
 
 ## Pick a driving method
 
@@ -33,9 +30,7 @@ let absolute = Instant::now() + Duration::from_secs(5);
 let forever = Deadline::NEVER;
 ```
 
-An expired deadline still permits the endpoint to inspect events that are
-already synchronously available, but it will not sleep or poll repeatedly
-past the deadline.
+An expired deadline still permits the endpoint to inspect events that are already synchronously available, but it will not sleep or poll repeatedly past the deadline.
 
 ## Build a straightforward event loop
 
@@ -58,55 +53,40 @@ fn run(mut node: Endpoint) -> Result<(), minip2p::Error> {
 }
 ```
 
-Synchronous method failures are returned as `minip2p::Error`. Non-fatal
-problems that occur later while driving appear as `Event::Error` or a
-feature-specific failure event.
+Synchronous method failures are returned as `minip2p::Error`. Non-fatal problems that occur later while driving appear as `Event::Error` or a feature-specific failure event.
 
 ## Focused waits preserve other events
 
-Suppose `wait_path` is waiting for a NAT result while an application stream
-receives data. The stream event is retained and becomes available through a
-later `next_event`; it is not discarded by the NAT wait.
+Suppose `wait_path` is waiting for a NAT result while an application stream receives data. The stream event is retained and becomes available through a later `next_event`; it is not discarded by the NAT wait.
 
-That retained backlog is bounded by `RUN_UNTIL_SKIP_LIMIT` (currently 1024
-events). If a focused wait cannot find its result while unrelated events keep
-arriving, it returns:
+That retained backlog is bounded by `RUN_UNTIL_SKIP_LIMIT` (currently 1024 events). If a focused wait cannot find its result while unrelated events keep arriving, it returns:
 
 ```text
 minip2p::Error::EventBacklogExceeded { limit: RUN_UNTIL_SKIP_LIMIT }
 ```
 
-Drain ordinary application events with `next_event` or `poll`, handle the
-high-volume source, and then retry the focused wait.
+Drain ordinary application events with `next_event` or `poll`, handle the high-volume source, and then retry the focused wait.
 
-:::tip
-Avoid calling `Deadline::NEVER` on a narrow predicate while ignoring a busy
-stream. Either consume those stream events in the main loop or use a finite
-deadline and alternate consumers.
-:::
+<Callout type="tip">
+
+Avoid calling `Deadline::NEVER` on a narrow predicate while ignoring a busy stream. Either consume those stream events in the main loop or use a finite deadline and alternate consumers.
+
+</Callout>
 
 ## Stream and connection shutdown
 
 - Call `close_stream_write` after the final byte for a graceful half-close.
-- Call `reset_stream` when the peer should observe abrupt termination and the
-  application still wants terminal events.
-- Call `abandon_stream` when no matching buffered or future events should be
-  delivered.
+- Call `reset_stream` when the peer should observe abrupt termination and the application still wants terminal events.
+- Call `abandon_stream` when no matching buffered or future events should be delivered.
 - Call `disconnect` to close the active peer connection.
 
-`Endpoint` does not run a background shutdown sequence after it is dropped.
-Drive any graceful application-level close exchanges before leaving scope, then
-call `endpoint.close()?`. `close` consumes the endpoint, disconnects peers, and
-briefly drains the resulting events. Dropping also disconnects, but ignores
-errors.
+`Endpoint` does not run a background shutdown sequence after it is dropped. Drive any graceful application-level close exchanges before leaving scope, then call `endpoint.close()?`. `close` consumes the endpoint, disconnects peers, and briefly drains the resulting events. Dropping also disconnects, but ignores errors.
 
-With the `mdns` feature, `endpoint.shutdown()` has a narrower meaning: it sends
-mDNS goodbyes and stops mDNS while leaving QUIC and TCP usable.
+With the `mdns` feature, `endpoint.shutdown()` has a narrower meaning: it sends mDNS goodbyes and stops mDNS while leaving QUIC and TCP usable.
 
 ## Wait for every event family
 
-`next_event` waits for ordinary endpoint events. Use `next_wake` when one loop
-also needs prompt access to NAT, pubsub, discovery, or relay-server events:
+`next_event` waits for ordinary endpoint events. Use `next_wake` when one loop also needs prompt access to NAT, pubsub, discovery, or relay-server events:
 
 ```rust
 use minip2p::{Deadline, EndpointWake};
@@ -124,9 +104,6 @@ loop {
 }
 ```
 
-`DriverProgress` remains ready while any enabled capability queue contains
-events. Drain every enabled queue before calling `next_wake` again. Leaving one
-non-empty causes the next call to return immediately.
+`DriverProgress` remains ready while any enabled capability queue contains events. Drain every enabled queue before calling `next_wake` again. Leaving one non-empty causes the next call to return immediately.
 
-See [Rust troubleshooting](/rust/troubleshooting) for common event symptoms and
-responses.
+See [Rust troubleshooting](/rust/troubleshooting) for common event symptoms and responses.

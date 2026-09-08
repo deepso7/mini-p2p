@@ -1,7 +1,6 @@
 import { defineMeta } from "blume";
 
 export default defineMeta({
-  title: "TypeScript",
   icon: "braces",
   order: 2,
   pages: [
@@ -13,4 +12,5 @@ export default defineMeta({
     "networking-and-events",
     "troubleshooting",
   ],
+  title: "TypeScript",
 });

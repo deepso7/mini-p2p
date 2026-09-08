@@ -1,5 +1,5 @@
 {
-  "name": "@minip2p/node-darwin-arm64",
+  "name": "@minip2p/node-linux-arm64-musl",
   "version": "0.5.3",
   "description": "Node.js bindings for minip2p",
   "keywords": [
@@ -15,18 +15,21 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/deepso7/minip2p.git",
-    "directory": "bindings/ts/node"
+    "directory": "bindings/ts/node-platforms/linux-arm64-musl"
   },
   "files": [
-    "minip2p.darwin-arm64.node"
+    "minip2p.linux-arm64-musl.node"
   ],
   "os": [
-    "darwin"
+    "linux"
   ],
   "cpu": [
     "arm64"
   ],
-  "main": "minip2p.darwin-arm64.node",
+  "libc": [
+    "musl"
+  ],
+  "main": "minip2p.linux-arm64-musl.node",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

@@ -1,21 +1,8 @@
 # minip2p-relay-server
 
-`minip2p-relay-server` is the deterministic `no_std + alloc` policy layer for
-hosting a Circuit Relay v2 server. The relay wire crate owns one HOP or STOP
-handshake; this crate owns the whole service: reservations, exact-connection
-identity, admission, token buckets, control deadlines, circuits, forwarding,
-accepted-byte accounting, and typed lifecycle events. Sockets, system clocks,
-blocking waits, Endpoint composition, ACLs, discovery, metrics, and proxy-aware
-IP policy stay in adapters.
+`minip2p-relay-server` is the deterministic `no_std + alloc` policy layer for hosting a Circuit Relay v2 server. The relay wire crate owns one HOP or STOP handshake; this crate owns the whole service: reservations, exact-connection identity, admission, token buckets, control deadlines, circuits, forwarding, accepted-byte accounting, and typed lifecycle events. Sockets, system clocks, blocking waits, Endpoint composition, ACLs, discovery, metrics, and proxy-aware IP policy stay in adapters.
 
-The host supplies a `Now`, feeds Swarm events, drains tokenized actions, and
-echoes every open/send/close/reset result. Drain a claimed input and all of its
-synchronous results to quiescence before delivering another transport event.
-The first `handle_event` at each `Now` sample processes due deadlines before
-dispatching that event, so deadlines win at equality. Call `handle_tick(now)`
-to force that sweep without an event. The service assumes Swarm's single live
-connection per peer but keeps exact connection and stream identities so stale
-superseded inputs cannot mutate replacement state.
+The host supplies a `Now`, feeds Swarm events, drains tokenized actions, and echoes every open/send/close/reset result. Drain a claimed input and all of its synchronous results to quiescence before delivering another transport event. The first `handle_event` at each `Now` sample processes due deadlines before dispatching that event, so deadlines win at equality. Call `handle_tick(now)` to force that sweep without an event. The service assumes Swarm's single live connection per peer but keeps exact connection and stream identities so stale superseded inputs cannot mutate replacement state.
 
 ## Compatibility contract
 
@@ -36,14 +23,8 @@ superseded inputs cannot mutate replacement state.
 | Forwarding/backpressure | Tokenized actions account only accepted writes; transport queues own backpressure. | minip2p extension. |
 | Reservation voucher | `voucher: None`. | rust-libp2p parity, while deliberately omitting the protocol recommendation. |
 
-These choices deliberately correct or differ from rust-libp2p 0.22 where the
-canonical minip2p relay-server specification says so.
+These choices deliberately correct or differ from rust-libp2p 0.22 where the canonical minip2p relay-server specification says so.
 
 ## Explicit non-goals
 
-The service does not provide reservation vouchers, relay discovery/autorelay,
-ACLs, metrics, proxy-aware IP limiting, a portable/smoltcp Endpoint driver,
-Swarm-wide pre-negotiation stream caps, or replacement of existing test relay
-fixtures. These omissions are not claimed as Circuit Relay v2 or rust-libp2p
-parity. Low-level portable hosts may drive this crate directly; only the
-application-facing Endpoint adapter is std-only.
+The service does not provide reservation vouchers, relay discovery/autorelay, ACLs, metrics, proxy-aware IP limiting, a portable/smoltcp Endpoint driver, Swarm-wide pre-negotiation stream caps, or replacement of existing test relay fixtures. These omissions are not claimed as Circuit Relay v2 or rust-libp2p parity. Low-level portable hosts may drive this crate directly; only the application-facing Endpoint adapter is std-only.

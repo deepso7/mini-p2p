@@ -1,5 +1,5 @@
 {
-  "name": "@minip2p/node-linux-arm64-gnu",
+  "name": "@minip2p/node-linux-x64-musl",
   "version": "0.5.3",
   "description": "Node.js bindings for minip2p",
   "keywords": [
@@ -15,21 +15,21 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/deepso7/minip2p.git",
-    "directory": "bindings/ts/node"
+    "directory": "bindings/ts/node-platforms/linux-x64-musl"
   },
   "files": [
-    "minip2p.linux-arm64-gnu.node"
+    "minip2p.linux-x64-musl.node"
   ],
   "os": [
     "linux"
   ],
   "cpu": [
-    "arm64"
+    "x64"
   ],
   "libc": [
-    "glibc"
+    "musl"
   ],
-  "main": "minip2p.linux-arm64-gnu.node",
+  "main": "minip2p.linux-x64-musl.node",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

@@ -1,11 +1,11 @@
-/* oxlint-disable func-style -- The script keeps its hoisted process runner below the generation steps. */
+/* oxlint-disable func-style -- Use named function declarations for script helpers. */
 
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 
 const packageRoot = path.resolve(import.meta.dirname, "..");
-const workspaceRoot = path.resolve(packageRoot, "..");
+const workspaceRoot = path.resolve(packageRoot, "../../..");
 const rustRoot = path.resolve(packageRoot, "../../..");
 const libraryExtension =
   {
@@ -26,6 +26,20 @@ const ubrn = path.join(
 );
 const environment = { ...process.env };
 delete environment.LIBCLANG_PATH;
+
+function run(command, args, cwd, env) {
+  const result = spawnSync(command, args, {
+    cwd,
+    env,
+    stdio: "inherit",
+  });
+  if (result.error !== undefined) {
+    throw result.error;
+  }
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
+}
 
 run(
   "cargo",
@@ -83,17 +97,3 @@ run(
   packageRoot,
   environment
 );
-
-function run(command, args, cwd, env) {
-  const result = spawnSync(command, args, {
-    cwd,
-    env,
-    stdio: "inherit",
-  });
-  if (result.error !== undefined) {
-    throw result.error;
-  }
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1);
-  }
-}

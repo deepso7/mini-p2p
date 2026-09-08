@@ -13,7 +13,11 @@ publish = false
 workspace = true
 
 [dependencies]
-minip2p = { package = "minip2p-rs", path = "../minip2p", features = ["discovery", "mdns", "tcp"] }
+minip2p = { package = "minip2p-rs", path = "../minip2p", features = [
+  "discovery",
+  "mdns",
+  "tcp",
+] }
 minip2p-swarm = { path = "../swarm" }
 minip2p-pubsub = { path = "../pubsub" }
 thiserror = "2.0.20"

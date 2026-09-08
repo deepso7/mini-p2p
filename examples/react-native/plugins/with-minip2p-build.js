@@ -1,9 +1,13 @@
-/* oxlint-disable func-style, no-implicit-globals, unicorn/prefer-module -- Expo discovers this config plugin as a CommonJS file, and its helper is intentionally hoisted. */
+/* oxlint-disable func-style, no-implicit-globals, unicorn/prefer-module -- Expo discovers this config plugin as a CommonJS file, and helpers use named function declarations. */
 
 const { withProjectBuildGradle } = require("expo/config-plugins");
 
 const NDK_VERSION = "28.2.13676358";
 const MARKER = "// minip2p: Android toolchain";
+
+function escapeRegExp(value) {
+  return value.replaceAll(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+}
 
 module.exports = function withMinip2pBuild(config) {
   return withProjectBuildGradle(config, (project) => {
@@ -24,7 +28,3 @@ ext {
     return project;
   });
 };
-
-function escapeRegExp(value) {
-  return value.replaceAll(/[.*+?^${}()|[\]\\]/gu, "\\$&");
-}

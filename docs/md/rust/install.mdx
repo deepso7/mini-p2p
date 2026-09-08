@@ -3,8 +3,7 @@ title: Install
 description: Install minip2p for Rust and choose the network capabilities your application needs.
 ---
 
-minip2p requires Rust 1.91 or newer. The package is named `minip2p-rs` on
-crates.io and imported as `minip2p` in Rust code.
+minip2p requires Rust 1.91 or newer. The package is named `minip2p-rs` on crates.io and imported as `minip2p` in Rust code.
 
 ## Install the default endpoint
 
@@ -12,8 +11,7 @@ crates.io and imported as `minip2p` in Rust code.
 cargo add minip2p-rs
 ```
 
-The default endpoint listens over QUIC and includes peer authentication,
-Identify, Ping, and custom protocol streams.
+The default endpoint listens over QUIC and includes peer authentication, Identify, Ping, and custom protocol streams.
 
 ```rust
 use minip2p::Endpoint;
@@ -25,8 +23,7 @@ fn main() -> Result<(), minip2p::Error> {
 }
 ```
 
-Continue to [Connect two peers](/rust/connect-peers) if that is enough for the
-application.
+Continue to [Connect two peers](/rust/connect-peers) if that is enough for the application.
 
 ## Add an optional capability
 
@@ -40,15 +37,13 @@ Add only the capabilities the application uses:
 | Signed discovery | `cargo add minip2p-rs --features discovery` | Call `.discovery()` or provide a discovery configuration. |
 | Local mDNS | `cargo add minip2p-rs --features mdns` | Call `.mdns()` or provide an mDNS configuration. |
 
-A Cargo feature makes the capability available. The corresponding builder
-method turns it on for an endpoint. The feature matrix lists the exact methods
-and required network infrastructure.
+A Cargo feature makes the capability available. The corresponding builder method turns it on for an endpoint. The feature matrix lists the exact methods and required network infrastructure.
 
-:::note
-An AutoNAT server measures reachability. It does not provide a relay path.
-Configure a Circuit Relay v2 server when peers need relayed connections or
-relay-assisted hole punching.
-:::
+<Callout type="note">
+
+An AutoNAT server measures reachability. It does not provide a relay path. Configure a Circuit Relay v2 server when peers need relayed connections or relay-assisted hole punching.
+
+</Callout>
 
 ## Run without an operating system
 
@@ -58,7 +53,6 @@ For a `no_std + alloc` endpoint over smoltcp:
 cargo add minip2p-rs --no-default-features --features smoltcp
 ```
 
-The host supplies network I/O, monotonic time, and secure entropy. Continue to
-[Embedded devices](/rust/embedded-devices) for the complete setup.
+The host supplies network I/O, monotonic time, and secure entropy. Continue to [Embedded devices](/rust/embedded-devices) for the complete setup.
 
 See the [feature matrix](/reference/feature-matrix) when combining capabilities.

@@ -3,9 +3,7 @@ title: Connect two peers
 description: Print a dialable PeerAddr and measure a libp2p Ping RTT between two local processes.
 ---
 
-This quickstart creates one small Cargo project with two binaries. The
-listener prints a paste-ready peer address; the dialer connects to it and
-measures a Ping round trip.
+This quickstart creates one small Cargo project with two binaries. The listener prints a paste-ready peer address; the dialer connects to it and measures a Ping round trip.
 
 Before starting, [install minip2p](/rust/install) with Rust 1.91 or newer.
 
@@ -107,20 +105,16 @@ listen=/ip4/127.0.0.1/udp/54321/quic-v1/p2p/12D3KooW…
 listen=/ip6/::1/udp/54322/quic-v1/p2p/12D3KooW…
 ```
 
-Keep the listener running. In terminal two, paste one complete `listen=`
-value:
+Keep the listener running. In terminal two, paste one complete `listen=` value:
 
 ```console
 $ cargo run --bin dialer -- /ip4/127.0.0.1/udp/54321/quic-v1/p2p/12D3KooW…
 peer=12D3KooW… rtt=2ms
 ```
 
-`wait_peer_ready` waits until the connection is authenticated and the first
-Identify exchange finishes. Only after that does the dialer issue Ping.
+`wait_peer_ready` waits until the connection is authenticated and the first Identify exchange finishes. Only after that does the dialer issue Ping.
 
-`bind_quic_dual_stack` binds wildcard sockets. The listener rewrites only the
-printed local-demo addresses to loopback; the endpoint itself continues
-listening on both wildcard sockets.
+`bind_quic_dual_stack` binds wildcard sockets. The listener rewrites only the printed local-demo addresses to loopback; the endpoint itself continues listening on both wildcard sockets.
 
 ## If it does not connect
 
@@ -141,5 +135,4 @@ listening on both wildcard sockets.
   </AccordionItem>
 </Accordion>
 
-Next: [Concepts](/rust/concepts) or
-[Register a protocol](/rust/register-a-protocol).
+Next: [Concepts](/rust/concepts) or [Register a protocol](/rust/register-a-protocol).

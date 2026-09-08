@@ -1,0 +1,32 @@
+packages:
+  - docs
+  - bindings/ts/core
+  - bindings/ts/node
+  - bindings/ts/node-platforms/*
+  - bindings/ts/react-native
+  - examples/react-native
+  - bindings/ts/test-fixtures
+
+allowBuilds:
+  "@scarf/scarf": true
+  esbuild: true
+
+catalog:
+  "@types/node": 26.5.0
+  "@types/react": 19.2.18
+  del-cli: 7.0.0
+  react: 19.2.8
+  react-native: 0.86.3
+  typescript: 7.0.2
+
+minimumReleaseAge: 0
+
+nodeLinker: hoisted
+
+# Install explicitly before Turbo launches parallel pnpm scripts.
+verifyDepsBeforeRun: false
+
+saveExact: true
+
+patchedDependencies:
+  uniffi-bindgen-react-native@0.31.0-5: bindings/ts/react-native/patches/uniffi-bindgen-react-native@0.31.0-5.patch

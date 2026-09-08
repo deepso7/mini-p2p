@@ -1,33 +1,55 @@
 import { defineConfig } from "blume";
 
 const brand = {
-  orange: "oklch(0.610 0.112 47)",
   black: "oklch(0.170 0.008 250)",
+  orange: "oklch(0.610 0.112 47)",
   white: "oklch(0.950 0.006 60)",
 } as const;
 
 export default defineConfig({
-  title: "minip2p",
-  description:
-    "A minimal, caller-driven libp2p implementation in Rust, built around QUIC and Sans-I/O state machines.",
-  logo: {
-    image: "/logo.svg",
-    text: "minip2p",
+  ai: {
+    llmsTxt: {
+      enabled: true,
+      openapi: false,
+    },
   },
   content: {
     sources: [
       {
-        type: "filesystem",
         root: "md",
+        type: "filesystem",
       },
       {
-        type: "github-releases",
-        prefix: "changelog",
-        owner: "deepso7",
-        repo: "minip2p",
         limit: 50,
+        owner: "deepso7",
+        prefix: "changelog",
+        repo: "minip2p",
+        type: "github-releases",
       },
     ],
+  },
+  deployment: {
+    adapter: "cloudflare",
+    site: "https://minip2p.com",
+  },
+  description:
+    "A minimal, caller-driven libp2p implementation in Rust, built around QUIC and Sans-I/O state machines.",
+  github: {
+    branch: "main",
+    dir: "docs",
+    owner: "deepso7",
+    repo: "minip2p",
+  },
+  lastModified: true,
+  logo: {
+    image: "/logo.svg",
+    text: "minip2p",
+  },
+  markdown: {
+    code: {
+      icons: true,
+      wrap: false,
+    },
   },
   navigation: {
     tabs: [
@@ -35,18 +57,12 @@ export default defineConfig({
       { label: "Changelog", path: "/changelog" },
     ],
   },
-  ai: {
-    llmsTxt: {
-      enabled: true,
-      openapi: false,
-    },
-  },
   seo: {
     agentReadability: true,
     contentSignals: {
-      search: true,
       aiInput: true,
       aiTrain: true,
+      search: true,
     },
     og: {
       enabled: true,
@@ -65,27 +81,11 @@ export default defineConfig({
   theme: {
     accent: brand.orange,
     background: {
-      light: brand.white,
       dark: brand.black,
+      light: brand.white,
     },
-    radius: "sm",
     mode: "system",
+    radius: "sm",
   },
-  markdown: {
-    code: {
-      icons: true,
-      wrap: false,
-    },
-  },
-  github: {
-    owner: "deepso7",
-    repo: "minip2p",
-    branch: "main",
-    dir: "docs",
-  },
-  lastModified: true,
-  deployment: {
-    adapter: "cloudflare",
-    site: "https://minip2p.com",
-  },
+  title: "minip2p",
 });

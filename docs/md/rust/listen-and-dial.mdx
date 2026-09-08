@@ -3,10 +3,7 @@ title: Listen and dial
 description: Bind QUIC, TCP, or both; publish dialable peer addresses; and wait for PeerReady.
 ---
 
-This guide covers direct QUIC and TCP with the base Endpoint API. QUIC is on
-by default; TCP needs the `tcp` Cargo feature. For relay races and hole
-punching, use [Traverse NAT](/rust/traverse-nat). If you have not run a local
-connection yet, start with [Connect two peers](/rust/connect-peers).
+This guide covers direct QUIC and TCP with the base Endpoint API. QUIC is on by default; TCP needs the `tcp` Cargo feature. For relay races and hole punching, use [Traverse NAT](/rust/traverse-nat). If you have not run a local connection yet, start with [Connect two peers](/rust/connect-peers).
 
 ## Bind an endpoint
 
@@ -42,9 +39,7 @@ fn local_dialable(address: &PeerAddr) -> String {
 }
 ```
 
-`listen()` publishes the first already-bound address. `listen_all()` publishes
-every bound address, which is normally the right choice for a dual-stack
-endpoint.
+`listen()` publishes the first already-bound address. `listen_all()` publishes every bound address, which is normally the right choice for a dual-stack endpoint.
 
 To listen on both, chain the builder methods before `bind`:
 
@@ -55,14 +50,13 @@ let mut node = Endpoint::builder()
     .bind()?;
 ```
 
-`/udp/.../quic-v1` goes over QUIC; `/tcp` goes over TCP. Above that, swarm
-and app-protocol APIs look the same.
+`/udp/.../quic-v1` goes over QUIC; `/tcp` goes over TCP. Above that, swarm and app-protocol APIs look the same.
 
-:::warning
-An address containing `/ip4/0.0.0.0` or `/ip6/::` describes where the socket
-is bound, not an address another machine can dial. Advertise a real interface,
-public, or relay circuit address to remote peers.
-:::
+<Callout type="warning">
+
+An address containing `/ip4/0.0.0.0` or `/ip6/::` describes where the socket is bound, not an address another machine can dial. Advertise a real interface, public, or relay circuit address to remote peers.
+
+</Callout>
 
 ## Dial a known peer
 
@@ -82,19 +76,14 @@ let connection_ids = node.dial(&target)?;
 println!("started {} dial(s)", connection_ids.len());
 ```
 
-`dial` starts every applicable local address family. For a `/dns/...` target on
-a dual-stack endpoint, that can mean both IPv4 and IPv6 connection IDs.
-`/dns4/...` and `/dns6/...` stay single-family. Use `dial_ip4` or `dial_ip6`
-when policy requires one family.
+`dial` starts every applicable local address family. For a `/dns/...` target on a dual-stack endpoint, that can mean both IPv4 and IPv6 connection IDs. `/dns4/...` and `/dns6/...` stay single-family. Use `dial_ip4` or `dial_ip6` when policy requires one family.
 
 ## Wait for PeerReady
 
 A successful dial still has two useful milestones:
 
-1. `Event::ConnectionEstablished`: the transport is up and the peer identity
-   is authenticated.
-2. `Event::PeerReady`: the first Identify exchange has completed, so the
-   endpoint knows which protocols the peer supports.
+1. `Event::ConnectionEstablished`: the transport is up and the peer identity is authenticated.
+2. `Event::PeerReady`: the first Identify exchange has completed, so the endpoint knows which protocols the peer supports.
 
 ```rust
 use std::time::Duration;
@@ -109,10 +98,7 @@ if ready.is_none() {
 }
 ```
 
-Wait for `PeerReady` before opening an application protocol stream. After
-Identify completes, `open_stream` can reject an unsupported protocol
-immediately with
-`minip2p::Error::Swarm(minip2p::SwarmError::RemoteDoesNotSupport { .. })`.
+Wait for `PeerReady` before opening an application protocol stream. After Identify completes, `open_stream` can reject an unsupported protocol immediately with `minip2p::Error::Swarm(minip2p::SwarmError::RemoteDoesNotSupport { .. })`.
 
 ## Inspect and disconnect
 
@@ -133,15 +119,10 @@ for peer in node.connected_peers() {
 node.disconnect(target.peer_id())?;
 ```
 
-`disconnect` closes the active connection. A later connection closure appears
-as `Event::ConnectionClosed`.
+`disconnect` closes the active connection. A later connection closure appears as `Event::ConnectionClosed`.
 
 ## `dial` is direct-only
 
-`dial*` does not reserve on a relay, establish a circuit, or start DCUtR. When
-the application has enabled and configured NAT traversal,
-use `connect*` plus `wait_path` instead. See
-[Traverse NAT](/rust/traverse-nat).
+`dial*` does not reserve on a relay, establish a circuit, or start DCUtR. When the application has enabled and configured NAT traversal, use `connect*` plus `wait_path` instead. See [Traverse NAT](/rust/traverse-nat).
 
-Next: [Register a protocol](/rust/register-a-protocol) or
-[Identity](/rust/identity).
+Next: [Register a protocol](/rust/register-a-protocol) or [Identity](/rust/identity).

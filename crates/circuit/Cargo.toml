@@ -16,17 +16,19 @@ workspace = true
 [features]
 default = ["std"]
 std = [
-    "minip2p-core/std",
-    "minip2p-identity/std",
-    "minip2p-platform/std",
-    "minip2p-secure-mux/std",
-    "minip2p-transport/std",
-    "thiserror/std",
+  "minip2p-core/std",
+  "minip2p-identity/std",
+  "minip2p-platform/std",
+  "minip2p-secure-mux/std",
+  "minip2p-transport/std",
+  "thiserror/std",
 ]
 
 [dependencies]
 minip2p-core = { path = "../core", version = "0.5.3", default-features = false }
-minip2p-identity = { path = "../identity", version = "0.5.3", default-features = false, features = ["ed25519"] }
+minip2p-identity = { path = "../identity", version = "0.5.3", default-features = false, features = [
+  "ed25519",
+] }
 minip2p-platform = { path = "../platform", version = "0.5.3", default-features = false }
 minip2p-secure-mux = { path = "../secure-mux", version = "0.5.3", default-features = false }
 minip2p-transport = { path = "../transport", version = "0.5.3", default-features = false }

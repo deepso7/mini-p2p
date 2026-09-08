@@ -1,6 +1,11 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [".nvmrc", "pnpm-lock.yaml", "pnpm-workspace.yaml"],
+  "$schema": "https://turborepo.dev/schema.json",
+  "globalDependencies": [
+    ".nvmrc",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "tsconfig.base.json"
+  ],
   "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {
@@ -16,11 +21,11 @@
         "!android/build",
         "src/*.ts",
         "src/*.tsx",
-        "example/package.json",
-        "example/android",
-        "!example/android/.gradle",
-        "!example/android/build",
-        "!example/android/app/build"
+        "$TURBO_ROOT$/examples/react-native/package.json",
+        "$TURBO_ROOT$/examples/react-native/android",
+        "!$TURBO_ROOT$/examples/react-native/android/.gradle",
+        "!$TURBO_ROOT$/examples/react-native/android/build",
+        "!$TURBO_ROOT$/examples/react-native/android/app/build"
       ],
       "outputs": []
     },
@@ -37,10 +42,10 @@
         "ios",
         "src/*.ts",
         "src/*.tsx",
-        "example/package.json",
-        "example/ios",
-        "!example/ios/build",
-        "!example/ios/Pods"
+        "$TURBO_ROOT$/examples/react-native/package.json",
+        "$TURBO_ROOT$/examples/react-native/ios",
+        "!$TURBO_ROOT$/examples/react-native/ios/build",
+        "!$TURBO_ROOT$/examples/react-native/ios/Pods"
       ],
       "outputs": []
     },
@@ -50,10 +55,10 @@
     "test": {
       "inputs": [
         "$TURBO_DEFAULT$",
-        "$TURBO_ROOT$/vitest.config.ts",
         "src/**",
         "tests/**",
-        "$TURBO_ROOT$/test-fixtures/**"
+        "$TURBO_ROOT$/bindings/ts/test-fixtures/**",
+        "$TURBO_ROOT$/bindings/ts/core/src/**"
       ],
       "outputs": []
     },
@@ -64,6 +69,11 @@
       "dependsOn": ["^typecheck"],
       "inputs": ["$TURBO_DEFAULT$", "tsconfig.json"],
       "outputs": []
+    },
+    "minip2p-docs#build": {
+      "cache": false,
+      "outputs": ["dist/**"],
+      "passThroughEnv": ["GITHUB_TOKEN"]
     }
   }
 }

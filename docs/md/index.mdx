@@ -3,9 +3,7 @@ title: Introduction
 description: Connect applications over authenticated QUIC and TCP from Rust, Node.js, or React Native.
 ---
 
-minip2p connects applications over authenticated QUIC and TCP. Use it from
-Rust, Node.js, or React Native. The Rust API is synchronous and caller-driven;
-the TypeScript API uses Promises and typed events.
+minip2p connects applications over authenticated QUIC and TCP. Use it from Rust, Node.js, or React Native. The Rust API is synchronous and caller-driven; the TypeScript API uses Promises and typed events.
 
 ## Choose a starting point
 
@@ -27,8 +25,7 @@ the TypeScript API uses Promises and typed events.
 - Adds pubsub, discovery, relay paths, and NAT traversal when requested.
 - Runs on `no_std + alloc` devices through the portable Rust endpoint.
 
-The base configuration includes QUIC, Identify, Ping, and custom protocols.
-Optional capabilities keep the same endpoint interface.
+The base configuration includes QUIC, Identify, Ping, and custom protocols. Optional capabilities keep the same endpoint interface.
 
 ## Common tasks
 
@@ -81,7 +78,11 @@ Optional capabilities keep the same endpoint interface.
   >
     Browse the published Rust reference for the latest release.
   </Card>
-  <Card title="Rust troubleshooting" href="/rust/troubleshooting" icon="life-buoy">
+  <Card
+    title="Rust troubleshooting"
+    href="/rust/troubleshooting"
+    icon="life-buoy"
+  >
     Diagnose connection, stream, discovery, and event problems.
   </Card>
   <Card
@@ -95,7 +96,7 @@ Optional capabilities keep the same endpoint interface.
 
 ## Constraints
 
-| | |
+|  |  |
 | --- | --- |
 | <Badge>pre-1.0</Badge> | Interfaces may change before the first stable release. |
 | <Badge>QUIC and TCP</Badge> | The dial address picks the transport. |

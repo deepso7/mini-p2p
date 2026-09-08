@@ -3,20 +3,15 @@ title: Traverse NAT
 description: Configure relay and AutoNAT, establish the first usable path, and observe direct upgrades or relay fallback.
 ---
 
-This guide starts where direct [listen and dial](/rust/listen-and-dial) leaves
-off. It configures relays and AutoNAT, races direct and relayed paths, and
-tracks later upgrades or fallback. Relayed paths require a reachable Circuit
-Relay v2 server, which minip2p can host.
+This guide starts where direct [listen and dial](/rust/listen-and-dial) leaves off. It configures relays and AutoNAT, races direct and relayed paths, and tracks later upgrades or fallback. Relayed paths require a reachable Circuit Relay v2 server, which minip2p can host.
 
 <Badge>pre-1.0</Badge>
 
-The `nat` feature adds an orchestrator that can race a direct QUIC or TCP dial
-against a Circuit Relay v2 path. DCUtR hole punching still needs QUIC.
+The `nat` feature adds an orchestrator that can race a direct QUIC or TCP dial against a Circuit Relay v2 path. DCUtR hole punching still needs QUIC.
 
 ## Host the relay
 
-The independent std-only `relay-server` feature hosts Circuit Relay v2 over
-QUIC, TCP, or both. The bundled operator example uses both:
+The independent std-only `relay-server` feature hosts Circuit Relay v2 over QUIC, TCP, or both. The bundled operator example uses both:
 
 ```bash
 cargo run -p minip2p-relay-server-example -- \
@@ -25,13 +20,7 @@ cargo run -p minip2p-relay-server-example -- \
   --announce /dns4/relay.example.com/tcp/19876
 ```
 
-Its default is the small `.relay_server().bind_*()` application path. Optional
-flags expose frozen resource/rate/control limits, and stdin `pause`/`resume`
-changes only new admissions. Explicit addresses are trusted operator input;
-otherwise selection prefers AutoNAT-confirmed direct addresses and then
-concrete listeners. Address changes affect future Identify responses only.
-There is no automatic relay discovery: distribute the printed peer address to
-clients explicitly. See the [hosting guide](https://github.com/deepso7/minip2p/tree/main/examples/relay-server).
+Its default is the small `.relay_server().bind_*()` application path. Optional flags expose frozen resource/rate/control limits, and stdin `pause`/`resume` changes only new admissions. Explicit addresses are trusted operator input; otherwise selection prefers AutoNAT-confirmed direct addresses and then concrete listeners. Address changes affect future Identify responses only. There is no automatic relay discovery: distribute the printed peer address to clients explicitly. See the [hosting guide](https://github.com/deepso7/minip2p/tree/main/examples/relay-server).
 
 ## Enable NAT traversal
 
@@ -59,9 +48,7 @@ let mut node = Endpoint::builder()
 node.listen_all()?;
 ```
 
-Calling `.autonat_server(...)` alone enables reachability probes, but it does
-not create a relay leg. Configure a relay for relayed
-connections, inbound reservations, and relay-assisted hole punching.
+Calling `.autonat_server(...)` alone enables reachability probes, but it does not create a relay leg. Configure a relay for relayed connections, inbound reservations, and relay-assisted hole punching.
 
 ## Choose a connect method
 
@@ -96,13 +83,10 @@ match node.wait_path(connect_id, Duration::from_secs(60))? {
 }
 ```
 
-`wait_path` returns `Ok(Some(path))` when it consumes the matching
-`NatEvent::PathEstablished`. It returns `Ok(None)` in two cases:
+`wait_path` returns `Ok(Some(path))` when it consumes the matching `NatEvent::PathEstablished`. It returns `Ok(None)` in two cases:
 
-- the attempt failed; `NatEvent::ConnectFailed` stays queued for
-  `take_nat_events`;
-- the deadline expired before either outcome; no `ConnectFailed` is
-  synthesized.
+- the attempt failed; `NatEvent::ConnectFailed` stays queued for `take_nat_events`;
+- the deadline expired before either outcome; no `ConnectFailed` is synthesized.
 
 ## Path selection and upgrade
 
@@ -123,15 +107,11 @@ The first usable path is explicit:
 - `Path::DirectPunched`: a DCUtR hole punch connected;
 - `Path::Relayed { relay }`: the protected relay circuit is usable.
 
-When a relayed path upgrades later, the application receives
-`NatEvent::PathUpgraded`. If punch windows fail, it receives
-`HolePunchFailed` events and eventually `FellBackToRelay`; the relayed
-connection stays usable.
+When a relayed path upgrades later, the application receives `NatEvent::PathUpgraded`. If punch windows fail, it receives `HolePunchFailed` events and eventually `FellBackToRelay`; the relayed connection stays usable.
 
 ## Reservations and reachability
 
-A private listener needs a reservation before another peer can reach it
-through the relay. Watch for:
+A private listener needs a reservation before another peer can reach it through the relay. Watch for:
 
 ```rust
 for event in node.take_nat_events() {
@@ -147,27 +127,14 @@ for event in node.take_nat_events() {
 }
 ```
 
-`node.reachability()` reports the current AutoNAT verdict.
-`node.active_reservation()` returns the currently held reservation, if any.
-AutoNAT servers are caller-supplied; minip2p does not discover them
-automatically.
+`node.reachability()` reports the current AutoNAT verdict. `node.active_reservation()` returns the currently held reservation, if any. AutoNAT servers are caller-supplied; minip2p does not discover them automatically.
 
 ## Keep driving after the first path
 
-`wait_path` returns when traffic can flow. Keep calling `next_event`, `poll`,
-or feature-focused waits afterward so DCUtR, reservation renewal, and
-connection events continue to progress.
+`wait_path` returns when traffic can flow. Keep calling `next_event`, `poll`, or feature-focused waits afterward so DCUtR, reservation renewal, and connection events continue to progress.
 
 ## Custom entropy without `std`
 
-Most applications do not configure circuit entropy: `Endpoint` uses the
-operating system's random source by default. When
-embedding `minip2p-circuit` with default features disabled, provide an
-`EntropySource` that never substitutes predictable bytes on failure. See the
-[`minip2p-circuit` README](https://github.com/deepso7/minip2p/blob/main/crates/circuit/README.md)
-for the trait contract and a custom-source example.
+Most applications do not configure circuit entropy: `Endpoint` uses the operating system's random source by default. When embedding `minip2p-circuit` with default features disabled, provide an `EntropySource` that never substitutes predictable bytes on failure. See the [`minip2p-circuit` README](https://github.com/deepso7/minip2p/blob/main/crates/circuit/README.md) for the trait contract and a custom-source example.
 
-For a complete live demonstration, use the existing
-[`minip2p-peer` example](https://github.com/deepso7/minip2p/tree/main/examples/peer).
-It shows loopback, relay reservations, relay fallback, and RTT changes after a
-direct upgrade.
+For a complete live demonstration, use the existing [`minip2p-peer` example](https://github.com/deepso7/minip2p/tree/main/examples/peer). It shows loopback, relay reservations, relay fallback, and RTT changes after a direct upgrade.
