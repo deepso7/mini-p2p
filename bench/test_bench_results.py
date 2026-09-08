@@ -20,6 +20,38 @@ class BenchResultsTest(unittest.TestCase):
         self.current = bench_results.validate(bench_results.load_json(ROOT / "bench/fixtures/current.json"))
         self.baseline = bench_results.validate(bench_results.load_json(ROOT / "bench/fixtures/baseline.json"))
 
+    def test_vitest_5_latency_report(self):
+        report = {
+            "success": True,
+            "testResults": [{"assertionResults": [{
+                "status": "passed",
+                "benchmarks": [{"tasks": [
+                    {"name": name, "latency": {"p50": 2.5}}
+                    for name in sorted(bench_results.EXPECTED_VITEST)
+                ]}],
+            }]}],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "vitest.json"
+            output = Path(directory) / "results.json"
+            source.write_text(json.dumps(report))
+            bench_results.collect_vitest(source, output, "test-sha")
+            result = bench_results.load_json(output)
+            self.assertEqual(result["git_sha"], "test-sha")
+            self.assertEqual({row["name"] for row in result["rows"]}, bench_results.EXPECTED_VITEST)
+            self.assertTrue(all(row["value"] == 2_500_000 for row in result["rows"]))
+
+            report["success"] = False
+            source.write_text(json.dumps(report))
+            with self.assertRaises(bench_results.BenchError):
+                bench_results.collect_vitest(source, output, "test-sha")
+
+            report["success"] = True
+            report["testResults"][0]["assertionResults"][0]["benchmarks"][0]["tasks"].pop()
+            source.write_text(json.dumps(report))
+            with self.assertRaisesRegex(bench_results.BenchError, "row set mismatch"):
+                bench_results.collect_vitest(source, output, "test-sha")
+
     def test_locked_boundaries_and_missing_row(self):
         rows = bench_results.compare_rows(self.current, self.baseline, None)
         by_name = {row.name: row for row in rows}
