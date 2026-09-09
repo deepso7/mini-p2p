@@ -20,6 +20,7 @@ Additional constraints: `unsafe` is forbidden workspace-wide; sockets, clocks, a
 just test          # nextest + doctests over the Endpoint feature matrix; needs cargo-nextest
 just clippy        # -D warnings, Endpoint TCP/discovery/mDNS variants, and fuzz/
 just fmt           # also formats fuzz/
+just clean         # Cargo targets, node_modules, Turbo caches, docs output
 just check-nostd   # all no_std crates on thumbv7em-none-eabi
 just fuzz 30       # needs nightly + cargo-fuzz
 ```

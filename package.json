@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
+    "clean:all": "./scripts/clean.sh",
     "example": "pnpm --filter react-native-minip2p-example",
     "format": "ultracite fix",
     "lint": "ultracite check",

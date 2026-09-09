@@ -4,6 +4,11 @@ fmt:
     cargo fmt --all
     cargo fmt --manifest-path fuzz/Cargo.toml
 
+# Wipe Cargo targets, node_modules, Turbo caches, docs output, and other
+# generated artifacts. Keeps code-ref/, fuzz corpus, and local identity keys.
+clean:
+    ./scripts/clean.sh
+
 check:
     cargo check --workspace --all-targets
     cargo check --manifest-path fuzz/Cargo.toml --all-targets
