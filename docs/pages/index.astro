@@ -1,0 +1,172 @@
+---
+import data from "blume:data";
+import PageLayout from "blume/components/layout/PageLayout.astro";
+
+const { config, navigation, fontCssVars } = data;
+---
+
+<PageLayout
+  site={{ title: config.title, description: config.description }}
+  logo={config.logo}
+  favicon={config.favicon}
+  appleIcon={config.appleIcon}
+  navigation={navigation}
+  themeMode={config.theme.mode}
+  fontCssVars={fontCssVars}
+  searchEnabled={config.search.enabled}
+  siteUrl={config.site}
+  ogEnabled={config.og.enabled}
+  structuredDataEnabled={config.structuredData}
+  x={config.x}
+  page={{
+    title: "minip2p · Minimal peer-to-peer networking",
+    description: "A minimal libp2p implementation in Rust. Connect applications over QUIC and TCP from Rust, Node.js, or React Native.",
+    route: "/",
+  }}
+>
+  <div class="landing">
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">A minimal libp2p implementation</p>
+      <div class="hero-copy">
+        <h1 id="hero-title">Peer-to-peer.<br />Keep it simple.</h1>
+        <p class="lede">Connect applications over authenticated QUIC and TCP.</p>
+        <div class="actions">
+          <a class="primary" href="/intro">Read the docs <span aria-hidden="true">↗</span></a>
+          <a class="secondary" href="https://github.com/deepso7/minip2p">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <div class="hero-mark">
+        <img src="/logo.svg" alt="minip2p dinosaur connected to peer nodes" width="960" height="640" fetchpriority="high" draggable="false" />
+      </div>
+      <nav class="platforms" aria-label="Get started by platform">
+        <a href="/rust/install"><span>Rust</span><small>Drive your own event loop.</small></a>
+        <a href="/typescript/start"><span>Node.js &amp; React Native</span><small>Promises and typed events.</small></a>
+        <a href="/rust/embedded-devices"><span>Embedded Rust</span><small>A portable no_std + alloc core.</small></a>
+      </nav>
+    </section>
+
+  </div>
+  <footer slot="footer" class="credit">
+    Made with <svg class="heart" viewBox="0 0 24 24" role="img" aria-label="love" width="14" height="14"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" /></svg> by <a href="https://deepso.sh" target="_blank" rel="noopener noreferrer">deepso</a>
+  </footer>
+</PageLayout>
+
+<style>
+  .credit {
+    padding: 0.75rem 1.5rem;
+    min-height: 3rem;
+    text-align: center;
+    color: var(--blume-muted-foreground);
+    font-size: 0.8125rem;
+  }
+
+  .heart { display: inline-block; fill: var(--blume-accent); vertical-align: -0.125em; }
+  .credit a { color: var(--blume-foreground); }
+  .credit a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  .landing {
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    column-gap: 2rem;
+    min-height: calc(100dvh - 7rem);
+    padding: clamp(1rem, 4dvh, 2.5rem) 0;
+  }
+  .eyebrow {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin: 0;
+    color: var(--blume-muted-foreground);
+    font-family: var(--blume-font-mono, monospace);
+    font-size: 0.8rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 3.65vw, 3.5rem);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 1.08;
+  }
+
+  .lede {
+    max-width: 21rem;
+    margin: 1.5rem 0;
+    color: var(--blume-muted-foreground);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .hero-mark {
+    position: relative;
+    isolation: isolate;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .hero-mark::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -45% -25%;
+    background: radial-gradient(ellipse, color-mix(in oklch, var(--blume-accent) 18%, transparent), transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero-mark img { display: block; width: 100%; height: auto; }
+  .platforms { display: grid; gap: 1.75rem; justify-self: end; }
+  .platforms a { display: grid; gap: 0.4rem; color: var(--blume-foreground); }
+  .platforms a span { font-size: 0.875rem; font-weight: 500; }
+  .platforms small { font-size: 0.8125rem; color: var(--blume-muted-foreground); }
+  .platforms a:hover span { text-decoration: underline; text-underline-offset: 4px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  a { text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--blume-accent); outline-offset: 5px; }
+  .actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .primary { background: var(--blume-foreground); color: var(--blume-background); }
+  .primary:hover { background: var(--blume-muted-foreground); }
+  .actions .secondary { color: var(--blume-foreground); border-color: var(--blume-border); }
+  .secondary:hover { background: var(--blume-muted); }
+  @media (max-width: 900px) {
+    .landing { padding-inline: 1.5rem; }
+    .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; align-content: space-evenly; gap: 1rem; padding: 1rem 0; text-align: center; }
+    .eyebrow { margin: 0; }
+    .hero-mark { grid-row: 2; width: min(55%, 24dvh, 16rem); justify-self: center; }
+    h1 { font-size: clamp(2rem, 5dvh, 3.5rem); }
+    .lede { margin: 0.75rem auto; font-size: 0.875rem; }
+    .actions { justify-content: center; }
+    .platforms { justify-self: stretch; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+  }
+
+  @media (max-width: 540px) {
+    .platforms { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem; }
+    .platforms a { padding-block: 0.375rem; }
+    .platforms a span { font-size: 0.75rem; }
+    .platforms small { display: none; }
+  }
+  @media (max-height: 500px) and (min-width: 600px) {
+    .hero { grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; gap: 0.5rem 1.5rem; }
+    .hero-mark { grid-row: 2; grid-column: 2; width: min(100%, 35dvh); }
+    .platforms { grid-column: 1 / -1; justify-self: center; display: flex; gap: 1.5rem; }
+    .platforms small { display: none; }
+    .lede { margin-block: 0.5rem; }
+    .actions a { padding: 0.5rem 0.75rem; }
+  }
+</style>

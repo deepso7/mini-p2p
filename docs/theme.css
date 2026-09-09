@@ -1,4 +1,6 @@
 :root {
+  scrollbar-gutter: stable;
+
   --minip2p-orange: oklch(0.61 0.112 47);
   --minip2p-black: oklch(0.17 0.008 250);
   --minip2p-white: oklch(0.95 0.006 60);
