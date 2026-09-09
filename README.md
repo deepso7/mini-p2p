@@ -125,6 +125,7 @@ just test          # workspace tests, Endpoint feature matrix, and doctests
                    # requires cargo-nextest (https://get.nexte.st)
 just clippy        # warnings-as-errors, feature variants, and fuzz crate
 just fmt           # format the workspace and fuzz crate
+just clean         # Cargo targets, node_modules, Turbo caches, docs output
 just check-nostd   # no_std crates on thumbv7em-none-eabi
 just bench
 just fuzz 30       # requires nightly and cargo-fuzz
