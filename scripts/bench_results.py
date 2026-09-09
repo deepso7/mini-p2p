@@ -132,15 +132,19 @@ def collect_criterion(root: Path, output: Path, git_sha: str, since: Path) -> No
 
 
 def collect_vitest(report: Path, output: Path, git_sha: str) -> None:
+    document = load_json(report)
+    if document.get("success") is not True:
+        raise BenchError(f"Vitest benchmark run did not succeed: {report}")
     rows = []
-    for file in load_json(report).get("files", []):
-        for group in file.get("groups", []):
-            for benchmark in group.get("benchmarks", []):
-                median_ms = benchmark.get("median")
-                name = benchmark.get("name")
-                if not isinstance(name, str) or isinstance(median_ms, bool) or not isinstance(median_ms, (int, float)):
-                    raise BenchError(f"invalid Vitest benchmark in {report}")
-                rows.append({"tier": "node-ffi", "name": name, "metric": "median_ns", "value": median_ms * 1_000_000})
+    for file in document.get("testResults", []):
+        for assertion in file.get("assertionResults", []):
+            for benchmark in assertion.get("benchmarks", []):
+                for task in benchmark.get("tasks", []):
+                    median_ms = task.get("latency", {}).get("p50")
+                    name = task.get("name")
+                    if not isinstance(name, str) or isinstance(median_ms, bool) or not isinstance(median_ms, (int, float)):
+                        raise BenchError(f"invalid Vitest benchmark in {report}")
+                    rows.append({"tier": "node-ffi", "name": name, "metric": "median_ns", "value": median_ms * 1_000_000})
     names = {row["name"] for row in rows}
     if names != EXPECTED_VITEST or len(rows) != len(EXPECTED_VITEST):
         missing = sorted(EXPECTED_VITEST - names)

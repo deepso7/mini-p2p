@@ -2,7 +2,7 @@
 
 import { setTimeout as delay } from "node:timers/promises";
 
-import { afterAll, beforeAll, bench, describe } from "vitest";
+import { afterAll, beforeAll, describe, test } from "vitest";
 
 import { Minip2p, generateSecretKey } from "../src/index.js";
 import { nativeBinding } from "../src/native.js";
@@ -49,45 +49,51 @@ afterAll(() => {
 });
 
 describe("node-ffi", () => {
-  bench("sdk_drain_flood", async () => {
-    const streams = await Promise.all(
-      Array.from({ length: BURST }, () =>
-        sdkA.openStream(sdkB.peerId(), PROTOCOL, { timeoutMs: TIMEOUT_MS })
-      )
-    );
-    for (const stream of streams) {
-      stream.abandon();
-    }
+  test("sdk_drain_flood", async ({ bench }) => {
+    await bench("sdk_drain_flood", async () => {
+      const streams = await Promise.all(
+        Array.from({ length: BURST }, () =>
+          sdkA.openStream(sdkB.peerId(), PROTOCOL, { timeoutMs: TIMEOUT_MS })
+        )
+      );
+      for (const stream of streams) {
+        stream.abandon();
+      }
+    }).run();
   });
 
-  bench("raw_drain_events", async () => {
-    const streams = Array.from({ length: BURST }, () =>
-      rawA.openStream(rawB.peerId(), PROTOCOL)
-    );
-    let seen = 0;
-    const deadline = Date.now() + TIMEOUT_MS;
-    while (seen < BURST && Date.now() < deadline) {
-      for (const event of rawA.drainEvents(256)) {
-        if (isNativeEvent(event) && event.tag === "StreamReady") {
-          seen += 1;
+  test("raw_drain_events", async ({ bench }) => {
+    await bench("raw_drain_events", async () => {
+      const streams = Array.from({ length: BURST }, () =>
+        rawA.openStream(rawB.peerId(), PROTOCOL)
+      );
+      let seen = 0;
+      const deadline = Date.now() + TIMEOUT_MS;
+      while (seen < BURST && Date.now() < deadline) {
+        for (const event of rawA.drainEvents(256)) {
+          if (isNativeEvent(event) && event.tag === "StreamReady") {
+            seen += 1;
+          }
+        }
+        if (seen < BURST) {
+          await delay(0);
         }
       }
-      if (seen < BURST) {
-        await delay(0);
+      if (seen !== BURST) {
+        throw new Error(`Timed out draining raw events: ${seen}/${BURST}`);
       }
-    }
-    if (seen !== BURST) {
-      throw new Error(`Timed out draining raw events: ${seen}/${BURST}`);
-    }
-    for (const stream of streams) {
-      rawA.abandonStream(rawB.peerId(), stream.streamId);
-    }
+      for (const stream of streams) {
+        rawA.abandonStream(rawB.peerId(), stream.streamId);
+      }
+    }).run();
   });
 
-  bench("connected_peers_sync", () => {
-    for (let index = 0; index < 1000; index += 1) {
-      sdkA.connectedPeers();
-    }
+  test("connected_peers_sync", async ({ bench }) => {
+    await bench("connected_peers_sync", () => {
+      for (let index = 0; index < 1000; index += 1) {
+        sdkA.connectedPeers();
+      }
+    }).run();
   });
 });
 
