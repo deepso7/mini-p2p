@@ -34,7 +34,7 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-root="$(cd "$(dirname "$0")/.." && pwd)"
+root="$(cd "$(dirname "$0")/.." && pwd -P)"
 cd "$root"
 
 # Nested git checkouts and editor/agent state are not build products.
@@ -68,8 +68,14 @@ extras=(
   target-linux
   tmp
   bindings/ts/react-native/lib
+  bindings/ts/react-native/build
+  bindings/ts/react-native/android/build
+  bindings/ts/react-native/android/app/libs
+  bindings/ts/react-native/android/src/main/jniLibs
+  bindings/ts/react-native/ios/build
   examples/react-native/android
   examples/react-native/ios
+  examples/react-native/web-build
   docs/snippets/quickstart/Cargo.lock
   docs/snippets/custom-stream/Cargo.lock
 )
@@ -105,24 +111,67 @@ if [[ ${#paths[@]} -eq 0 ]]; then
   exit 0
 fi
 
-# Drop duplicates and paths nested under another selected path so sizes
-# are not counted twice.
+in_array() {
+  local candidate="$1"
+  shift
+  local existing
+  for existing in "$@"; do
+    if [[ "$candidate" == "$existing" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Keep paths in the array. Newline-delimited sort would split a filename
+# that contains a newline and could turn it into a deletion target outside
+# the repository.
+unique=()
+for path in "${paths[@]}"; do
+  if in_array "$path" "${unique[@]+"${unique[@]}"}"; then
+    continue
+  fi
+  unique+=("$path")
+done
+
 kept=()
-while IFS= read -r path; do
+for path in "${unique[@]}"; do
   nested=false
-  for parent in "${kept[@]+"${kept[@]}"}"; do
-    case "$path" in
-      "$parent"/*)
-        nested=true
-        break
-        ;;
-    esac
+  for other in "${unique[@]}"; do
+    if [[ "$path" == "$other"/* ]]; then
+      nested=true
+      break
+    fi
   done
   if $nested; then
     continue
   fi
   kept+=("$path")
-done < <(printf '%s\n' "${paths[@]}" | sort -u)
+done
+
+in_repo() {
+  local path="$1"
+  local abs parent
+  case "$path" in
+    /* | .. | ../* | */.. | */../*)
+      return 1
+      ;;
+  esac
+  if [[ -d "$path" ]]; then
+    abs="$(cd "$path" && pwd -P)" || return 1
+  else
+    parent="$(cd "$(dirname "$path")" && pwd -P)" || return 1
+    abs="$parent/$(basename "$path")"
+  fi
+  case "$abs" in
+    "$root" | "$root"/*)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
 
 human_kib() {
   awk -v k="$1" 'BEGIN {
@@ -158,6 +207,10 @@ total_files=0
 removed=0
 
 for path in "${kept[@]}"; do
+  if ! in_repo "$path"; then
+    echo "skipping $path (outside repository)" >&2
+    continue
+  fi
   kib=$(du -sk "$path" 2>/dev/null | awk '{print $1}')
   kib=${kib:-0}
   files=$(find "$path" -type f -print | wc -l | tr -d ' ')
