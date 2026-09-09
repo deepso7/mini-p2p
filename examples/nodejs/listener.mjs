@@ -9,8 +9,12 @@ const endpoint = Minip2p.create({
   },
 });
 
-process.once("SIGINT", () => endpoint.close());
-process.once("SIGTERM", () => endpoint.close());
+for (const signal of ["SIGINT", "SIGTERM"]) {
+  process.once(signal, () => {
+    endpoint.close();
+    process.exit(0);
+  });
+}
 
 console.log(`Peer: ${endpoint.peerId()}`);
 console.log("Pass either address to the ping script:");
