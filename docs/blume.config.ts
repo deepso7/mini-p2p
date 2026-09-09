@@ -53,7 +53,7 @@ export default defineConfig({
   },
   navigation: {
     tabs: [
-      { label: "Docs", path: "/", href: "/intro" },
+      { href: "/intro", label: "Docs", path: "/" },
       { label: "Changelog", path: "/changelog" },
     ],
   },
