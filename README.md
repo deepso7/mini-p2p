@@ -114,6 +114,8 @@ The default swarm intentionally includes only identify, ping, and registered app
 
 The TypeScript SDK runs on Node.js through `@minip2p/node` and on React Native through `@minip2p/react-native`. Both packages expose the same application interface.
 
+Run the [Node.js ping example](examples/nodejs/README.md) to connect two local peers over QUIC or TCP.
+
 Every crate has its own README with API-specific details.
 
 ## Development

@@ -5,6 +5,7 @@ packages:
   - bindings/ts/node-platforms/*
   - bindings/ts/react-native
   - examples/react-native
+  - examples/nodejs
   - bindings/ts/test-fixtures
 
 allowBuilds:

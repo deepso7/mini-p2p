@@ -21,6 +21,8 @@ endpoint.close();
 
 The Node binding accepts the same TCP, QUIC, circuit-relay, signed-discovery, and mDNS configuration as `@minip2p/react-native`.
 
+For a runnable two-peer example, see the [Node.js ping example](https://github.com/deepso7/minip2p/tree/main/examples/nodejs).
+
 ## Development
 
 Build the package from this repository and run its test suite with:
