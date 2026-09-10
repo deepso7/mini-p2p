@@ -1,0 +1,15 @@
+{
+  "name": "minip2p-nodejs-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node listener.mjs",
+    "ping": "node ping.mjs"
+  },
+  "dependencies": {
+    "@minip2p/node": "workspace:*"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
